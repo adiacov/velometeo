@@ -3,7 +3,7 @@
 // cycler, key/all hours toggle, fit-route button.
 import { loadEvent, loadWeather, enrichScenarios, persistedModel, scenarioShortLabel } from './event-data.js';
 import { initI18n, t } from './i18n.js';
-import { initMap, fitRoute, renderWeatherMarkers } from './map.js';
+import { initMap, renderWeatherMarkers } from './map.js';
 
 const params = new URLSearchParams(window.location.search);
 
@@ -42,8 +42,6 @@ async function main() {
   let mode = params.get('mode') === 'key' ? 'key' : 'all';
 
   const mapHandle = initMap('route-map', data.route, data.route.waypoints);
-  document.querySelector('[data-fit-route]').addEventListener('click', () => fitRoute(mapHandle));
-  document.querySelector('[data-fit-route]').textContent = t('map.fit');
 
   const { locations } = await loadWeather(data, persistedModel().key);
   const enriched = enrichScenarios(data.scenarios, data.entry.date, locations);

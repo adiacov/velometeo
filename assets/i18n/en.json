@@ -34,7 +34,6 @@
   "weather.unavailable": "Weather data is temporarily unavailable. The route and scenarios are still shown — try again later.",
   "model.title": "Weather source",
   "map.view": "View on map",
-  "map.fit": "Whole route",
   "notes.title": "Technical notes",
   "notes.data": "Weather data comes from Open-Meteo (ECMWF and ICON models) and loads fresh every time the page opens. Missing values are shown as —, never invented.",
   "error.unknownEvent": "This event does not exist. See the list on the main page.",

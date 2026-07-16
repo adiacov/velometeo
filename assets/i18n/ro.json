@@ -34,7 +34,6 @@
   "weather.unavailable": "Datele meteo nu sunt disponibile momentan. Traseul si scenariile raman valabile — incearca mai tarziu.",
   "model.title": "Sursa meteo",
   "map.view": "Vezi pe harta",
-  "map.fit": "Tot traseul",
   "notes.title": "Note tehnice",
   "notes.data": "Datele meteo vin de la Open-Meteo (modelele ECMWF si ICON) si se incarca la fiecare deschidere a paginii. Valorile lipsa sunt afisate cu —, niciodata inventate.",
   "error.unknownEvent": "Evenimentul cerut nu exista. Vezi lista de pe pagina principala.",

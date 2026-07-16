@@ -91,10 +91,6 @@ export function initMap(containerId, route, waypoints) {
   return { map, bounds, weatherLayer };
 }
 
-export function fitRoute(handle) {
-  if (handle.bounds.isValid()) handle.map.fitBounds(handle.bounds, { padding: [40, 40] });
-}
-
 // Render hourly markers for one scenario. `rows` are scenario hours enriched
 // with { timeLabel, weather } (weather may be null — markers then show
 // dashes, honest-data rule). `mode` mirrors Delacau: 'all' shows every hour

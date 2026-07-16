@@ -190,3 +190,6 @@ td:first-child{font-weight:850;color:var(--text)}
 /* velometeo additions: "all events" home link, top-left in the topbar. */
 .home-link{margin-right:auto}
 .home-link a{white-space:nowrap}
+
+/* velometeo: map header has 3 controls (no fit button). */
+.compact-map-header{grid-template-columns:repeat(3,minmax(0,1fr))}
