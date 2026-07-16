@@ -131,9 +131,10 @@ async function main() {
   }
 
   // Mutable view state: model choice, fetch outcome, open scenario.
+  // All sections start closed; openKind only tracks the visitor's choice.
   let modelKey = persistedModel().key;
   let weather = null;
-  let openKind = entry.mode === 'pace' ? data.scenarios[1].kind : 'typical';
+  let openKind = null;
 
   function mapPageUrl(kind) {
     const q = new URLSearchParams({ event: entry.id, scenario: kind, back: `event.html?event=${entry.id}` });
