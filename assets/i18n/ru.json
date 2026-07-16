@@ -4,19 +4,16 @@
   "index.upcoming": "Предстоящие события",
   "index.past": "Прошедшие события",
   "index.empty": "Пока нет событий.",
-
   "event.date": "Дата",
   "event.start": "Старт",
   "event.distance": "Дистанция",
   "event.checkpoints": "Контрольные пункты",
   "event.loading": "Загрузка...",
-
   "scenario.fast": "Сценарий: быстрый финиш за {duration} ({from}–{to})",
   "scenario.typical": "Сценарий: обычный финиш за {duration} ({from}–{to})",
   "scenario.max": "Сценарий: официальный лимит {duration} ({from}–{to})",
   "scenario.pace": "Сценарий: средняя скорость {speed} км/ч ({from}–{to})",
   "scenario.rm.note": "Лимит 90 ч относится к событиям Randonneurs Mondiaux (1200 км+), не BRM.",
-
   "table.time": "Время",
   "table.km": "Км (примерно)",
   "table.weather": "Погода",
@@ -27,27 +24,23 @@
   "table.wind": "Ветер",
   "table.gusts": "Порывы",
   "table.windDir": "Направление ветра",
-
   "wind.head": "встречный",
   "wind.tail": "попутный",
   "wind.cross": "боковой",
-
   "provenance.forecast": "Прогноз погоды",
   "provenance.recorded": "Зафиксированная погода (свежие данные)",
   "provenance.observed": "Фактическая погода в день события",
-
   "weather.waiting": "Прогноз появится примерно за {days} дней до события.",
   "weather.unavailable": "Данные о погоде временно недоступны. Маршрут и сценарии показаны — попробуйте позже.",
-
   "model.title": "Источник погоды",
-
   "map.view": "Показать на карте",
   "map.fit": "Весь маршрут",
-
   "notes.title": "Технические заметки",
   "notes.data": "Данные о погоде приходят из Open-Meteo (модели ECMWF и ICON) и загружаются при каждом открытии страницы. Отсутствующие значения показаны как — и никогда не выдумываются.",
-
   "error.unknownEvent": "Такого события нет. Смотрите список на главной странице.",
   "error.badRoute": "Не удалось прочитать маршрут этого события.",
-  "back.index": "Все события"
+  "back.index": "Все события",
+  "map.back": "← Назад",
+  "map.allHours": "Все часы",
+  "map.keyHours": "Ключевые часы"
 }

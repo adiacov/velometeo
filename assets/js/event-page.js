@@ -1,23 +1,18 @@
-// Event page controller: ?event=<id> → manifest entry → GPX → scenarios →
-// one batched Open-Meteo request → table + map. Broken input degrades to a
-// friendly message (FR-005); weather failure keeps route and map (FR-017).
-// Rendering is repeatable: language switch re-renders, model switch
-// refetches then re-renders (clarification Q3 — one page, switcher drives
-// all visuals, choice persists).
-import { parseGpx } from './lib/gpx.js';
-import { brevetScenarios, paceScenarios, classifyBrevet, scenarioHours } from './lib/scenarios.js';
+// Event page controller: ?event=<id> → scenario sections with hourly
+// weather tables; each scenario header links to the full-screen map page
+// (Delacau UX). Broken input degrades to a friendly message (FR-005);
+// weather failure keeps the page structure (FR-017). Rendering is
+// repeatable: language switch re-renders, model switch refetches then
+// re-renders (clarification Q3).
 import {
-  MODELS,
-  modelByKey,
-  selectEventState,
-  daysUntilForecast,
-  buildWeatherUrl,
-  normalizeLocations,
-  weatherAt,
-  provenanceOf,
-  nowInTimeZone,
-  localIsoHour,
-} from './lib/weather-api.js';
+  loadEvent,
+  loadWeather,
+  enrichScenarios,
+  persistedModel,
+  MODEL_STORAGE_KEY,
+  EventDataError,
+} from './event-data.js';
+import { MODELS, modelByKey, daysUntilForecast, provenanceOf, nowInTimeZone } from './lib/weather-api.js';
 import {
   DASH,
   formatTemperature,
@@ -31,10 +26,6 @@ import {
   windRelative,
 } from './lib/format.js';
 import { initI18n, t, onLangChange } from './i18n.js';
-import { initMap, fitRoute, renderWeatherMarkers } from './map.js';
-
-const DEFAULT_TIMEZONE = 'Europe/Chisinau';
-const MODEL_STORAGE_KEY = 'velometeo.model';
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -102,24 +93,6 @@ function cardsHtml(rows) {
     .join('')}</div>`;
 }
 
-// Deduplicated request positions + per-scenario index mapping into them.
-function collectPositions(scenarios) {
-  const positions = [];
-  const indexByKey = new Map();
-  const indexed = scenarios.map((s) => ({
-    ...s,
-    hours: s.hours.map((h) => {
-      const key = `${h.lat.toFixed(4)},${h.lon.toFixed(4)}`;
-      if (!indexByKey.has(key)) {
-        indexByKey.set(key, positions.length);
-        positions.push({ lat: h.lat, lon: h.lon });
-      }
-      return { ...h, positionIndex: indexByKey.get(key) };
-    }),
-  }));
-  return { positions, indexed };
-}
-
 async function main() {
   await initI18n();
 
@@ -128,6 +101,7 @@ async function main() {
   const showError = (key) => {
     fatalErrorKey = key;
     $('[data-event-status]').innerHTML = `<div class="note">${escapeHtml(t(key))}</div>`;
+    $('[data-scenarios]').innerHTML = '';
   };
   onLangChange(() => {
     if (fatalErrorKey) showError(fatalErrorKey);
@@ -135,36 +109,17 @@ async function main() {
 
   const id = new URLSearchParams(window.location.search).get('event');
 
-  let manifest;
+  let data;
   try {
-    const res = await fetch('routes/index.json');
-    manifest = await res.json();
-  } catch {
-    showError('error.unknownEvent');
+    data = await loadEvent(id);
+  } catch (err) {
+    showError(err instanceof EventDataError ? err.key : 'error.unknownEvent');
     return;
   }
-
-  const entry = (manifest.events || []).find((e) => e && e.id === id);
-  if (!entry || !entry.gpx || !entry.date || !entry.start || !entry.mode) {
-    showError('error.unknownEvent');
-    return;
-  }
+  const { entry, route } = data;
 
   document.title = `${entry.name} — velometeo`;
   $('[data-event-name]').textContent = entry.name;
-
-  let route;
-  try {
-    const res = await fetch(entry.gpx);
-    if (!res.ok) throw new Error(String(res.status));
-    route = parseGpx(await res.text());
-  } catch (err) {
-    console.warn(`velometeo: broken route for "${id}"`, err);
-    showError('error.badRoute');
-    return;
-  }
-
-  // Header pills.
   $('[data-event-date]').textContent = entry.date;
   $('[data-event-start]').textContent = entry.start;
   $('[data-event-distance]').textContent = formatKm(route.lengthKm);
@@ -175,62 +130,29 @@ async function main() {
     cpPill.remove(); // checkpoints are optional (FR-003)
   }
 
-  // Scenarios for the configured mode (exactly one mode per page, FR-009).
-  const base = entry.mode === 'pace' ? paceScenarios(route.lengthKm) : brevetScenarios(route.lengthKm);
-  if (entry.mode === 'brevet') {
-    const cls = classifyBrevet(route.lengthKm);
-    if (cls.warn) {
-      console.warn(`velometeo: measured ${route.lengthKm.toFixed(1)} km deviates >15% from nearest standard ${cls.distance} km`);
-    }
-  }
-  const scenarios = base.map((s) => ({ ...s, hours: scenarioHours(s, route, entry.start) }));
-  const maxDurationHours = Math.max(...scenarios.map((s) => s.durationHours));
-  const eventTimes = { date: entry.date, start: entry.start, maxDurationHours };
-  const timezone = entry.timezone || DEFAULT_TIMEZONE;
-
-  const mapHandle = initMap('route-map', route, route.waypoints);
-  $('[data-fit-route]').addEventListener('click', () => fitRoute(mapHandle));
-
-  const { positions, indexed } = collectPositions(scenarios);
-
   // Mutable view state: model choice, fetch outcome, open scenario.
-  let modelKey = modelByKey(localStorage.getItem(MODEL_STORAGE_KEY)).key;
-  let state = null;
-  let locations = null;
-  let fetchFailed = false;
-  let openKind = entry.mode === 'pace' ? indexed[1].kind : 'typical';
+  let modelKey = persistedModel().key;
+  let weather = null;
+  let openKind = entry.mode === 'pace' ? data.scenarios[1].kind : 'typical';
 
-  async function loadWeather() {
-    const model = modelByKey(modelKey);
-    const now = nowInTimeZone(timezone);
-    state = selectEventState(eventTimes, now, model.horizonDays);
-    locations = null;
-    fetchFailed = false;
-    if (state === 'waiting') return;
-    try {
-      const res = await fetch(buildWeatherUrl({ state, positions, event: eventTimes, modelKey: model.key, timezone }));
-      if (!res.ok) throw new Error(String(res.status));
-      locations = normalizeLocations(await res.json());
-    } catch (err) {
-      console.warn('velometeo: weather fetch failed', err);
-      fetchFailed = true;
-    }
+  function mapPageUrl(kind) {
+    const q = new URLSearchParams({ event: entry.id, scenario: kind, back: `event.html?event=${entry.id}` });
+    return `map.html?${q}`;
   }
 
   function switcherHtml(model) {
     const links = MODELS.map((m) => `<a href="#" data-model="${escapeHtml(m.key)}" class="${m.key === model.key ? 'active' : ''}">${escapeHtml(m.label)}</a>`).join('');
-    return `<div class="model-switcher"><span class="pill"><b data-i18n="model.title">${escapeHtml(t('model.title'))}</b></span><div class="source-links">${links}</div></div>`;
+    return `<div class="model-switcher"><span class="pill"><b>${escapeHtml(t('model.title'))}</b></span><div class="source-links">${links}</div></div>`;
   }
 
   function statusHtml(model) {
-    const now = nowInTimeZone(timezone);
-    if (state === 'waiting') {
-      const days = Math.ceil(daysUntilForecast(eventTimes, now, model.horizonDays));
+    if (weather.state === 'waiting') {
+      const days = Math.ceil(daysUntilForecast(data.eventTimes, nowInTimeZone(data.timezone), model.horizonDays));
       return `<div class="note">${escapeHtml(t('weather.waiting', { days }))}</div>`;
     }
-    const provenance = provenanceOf(state);
+    const provenance = provenanceOf(weather.state);
     const pill = `<span class="pill"><b>${escapeHtml(t(`provenance.${provenance}`))}</b> · ${escapeHtml(model.label)}</span>`;
-    return fetchFailed ? `${pill}<div class="note">${escapeHtml(t('weather.unavailable'))}</div>` : pill;
+    return weather.fetchFailed ? `${pill}<div class="note">${escapeHtml(t('weather.unavailable'))}</div>` : pill;
   }
 
   function renderAll() {
@@ -244,26 +166,21 @@ async function main() {
         if (el.dataset.model === modelKey) return;
         modelKey = modelByKey(el.dataset.model).key;
         localStorage.setItem(MODEL_STORAGE_KEY, modelKey);
-        await loadWeather(); // lazy: only the selected model is fetched
+        weather = await loadWeather(data, modelKey); // lazy: selected model only
         renderAll();
       });
     });
 
-    const enriched = indexed.map((s) => ({
-      ...s,
-      rows: s.hours.map((h) => ({
-        ...h,
-        timeLabel: formatHour(h.clockTime, h.dayOffset),
-        weather: locations ? weatherAt(locations[h.positionIndex], localIsoHour(entry.date, h)) : null,
-      })),
-    }));
-    const byKind = new Map(enriched.map((s) => [s.kind, s]));
-    if (!byKind.has(openKind)) openKind = enriched[0].kind;
+    const enriched = enrichScenarios(data.scenarios, entry.date, weather.locations);
+    if (!enriched.some((s) => s.kind === openKind)) openKind = enriched[0].kind;
 
     const container = $('[data-scenarios]');
     container.innerHTML = enriched
       .map((s) => `<details class="scenario" data-scenario="${escapeHtml(s.kind)}" ${s.kind === openKind ? 'open' : ''}>
-        <summary class="scenario-head"><h3>${escapeHtml(scenarioTitle(s, entry.start, s.rows[s.rows.length - 1]))}</h3></summary>
+        <summary class="scenario-head">
+          <h3>${escapeHtml(scenarioTitle(s, entry.start, s.rows[s.rows.length - 1]))}</h3>
+          <a class="map-button" href="${mapPageUrl(s.kind)}" onclick="event.stopPropagation()">${escapeHtml(t('map.view'))}</a>
+        </summary>
         ${tableHtml(s.rows)}
         ${cardsHtml(s.rows)}
       </details>`)
@@ -277,17 +194,15 @@ async function main() {
         details.forEach((other) => {
           if (other !== el) other.open = false;
         });
-        renderWeatherMarkers(mapHandle, byKind.get(openKind).rows, t);
       });
     });
-    renderWeatherMarkers(mapHandle, byKind.get(openKind).rows, t);
   }
 
   onLangChange(() => {
     if (!fatalErrorKey) renderAll(); // same data, new language (no refetch)
   });
 
-  await loadWeather();
+  weather = await loadWeather(data, modelKey);
   renderAll();
 }
 

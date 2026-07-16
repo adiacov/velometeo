@@ -4,19 +4,16 @@
   "index.upcoming": "Evenimente viitoare",
   "index.past": "Evenimente trecute",
   "index.empty": "Niciun eveniment deocamdata.",
-
   "event.date": "Data",
   "event.start": "Start",
   "event.distance": "Distanta",
   "event.checkpoints": "Puncte de control",
   "event.loading": "Se incarca...",
-
   "scenario.fast": "Scenariu: finisare rapida in {duration} ({from}–{to})",
   "scenario.typical": "Scenariu: finisare tipica in {duration} ({from}–{to})",
   "scenario.max": "Scenariu: limita oficiala {duration} ({from}–{to})",
   "scenario.pace": "Scenariu: viteza medie {speed} km/h ({from}–{to})",
   "scenario.rm.note": "Limita de 90 h este pentru evenimente Randonneurs Mondiaux (1200 km+), nu BRM.",
-
   "table.time": "Ora",
   "table.km": "Km aprox.",
   "table.weather": "Vreme",
@@ -27,27 +24,23 @@
   "table.wind": "Vant",
   "table.gusts": "Rafale",
   "table.windDir": "Directie vant",
-
   "wind.head": "din fata",
   "wind.tail": "din spate",
   "wind.cross": "lateral",
-
   "provenance.forecast": "Prognoza meteo",
   "provenance.recorded": "Vreme inregistrata (date recente)",
   "provenance.observed": "Vremea reala observata in ziua evenimentului",
-
   "weather.waiting": "Prognoza devine disponibila cu ~{days} zile inainte de eveniment.",
   "weather.unavailable": "Datele meteo nu sunt disponibile momentan. Traseul si scenariile raman valabile — incearca mai tarziu.",
-
   "model.title": "Sursa meteo",
-
   "map.view": "Vezi pe harta",
   "map.fit": "Tot traseul",
-
   "notes.title": "Note tehnice",
   "notes.data": "Datele meteo vin de la Open-Meteo (modelele ECMWF si ICON) si se incarca la fiecare deschidere a paginii. Valorile lipsa sunt afisate cu —, niciodata inventate.",
-
   "error.unknownEvent": "Evenimentul cerut nu exista. Vezi lista de pe pagina principala.",
   "error.badRoute": "Traseul acestui eveniment nu a putut fi citit.",
-  "back.index": "Toate evenimentele"
+  "back.index": "Toate evenimentele",
+  "map.back": "← Inapoi",
+  "map.allHours": "Toate orele",
+  "map.keyHours": "Ore cheie"
 }

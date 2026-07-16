@@ -176,13 +176,6 @@ td:first-child{font-weight:850;color:var(--text)}
 @media (max-width:760px){.map-page{padding:6px;gap:6px}.compact-map-header{grid-template-columns:1fr 1fr;gap:7px}.map-header{border-radius:16px;padding:7px}.map-control-button{min-height:40px;font-size:13px;padding:8px}.route-map{border-radius:17px}.leaflet-popup-content{margin:10px 12px}.weather-popup{font-size:13px;min-width:170px}}
 
 
-/* velometeo additions: map embedded in the event page (Delacau had a
-   separate full-screen map page). */
-.map-embed-wrap{position:relative}
-.route-map-embed{height:min(65vh,460px)}
-.map-embed-fit{position:absolute;top:10px;right:10px;z-index:1000;cursor:pointer;padding:8px 12px;font-size:13px}
-@media (max-width:760px){.route-map-embed{height:52vh}}
-
 /* velometeo additions: index event list. */
 .event-list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
 .event-link{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 17px;background:var(--surface);border:1px solid var(--border);border-radius:18px;text-decoration:none;color:var(--text);box-shadow:var(--soft-shadow);transition:transform .15s ease,border-color .15s ease,background .15s ease}

@@ -1,11 +1,7 @@
-// Leaflet map embedded in the event page. Adapted from Delacau assets/map.js
+// Leaflet map primitives for map.html. Adapted from Delacau assets/map.js
 // (route polyline, weather markers, wind arrows, popups) — fed from runtime
 // data instead of a baked window.*_MAP_DATA object.
 import { formatTemperature, formatWind, formatPrecipitation, degreesToCardinal, DASH } from './lib/format.js';
-
-// Beyond this many hourly markers, show only key hours (start, quarters,
-// finish) so multi-day brevets stay readable on a phone.
-const KEY_HOURS_THRESHOLD = 16;
 
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>'"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]));
@@ -101,14 +97,15 @@ export function fitRoute(handle) {
 
 // Render hourly markers for one scenario. `rows` are scenario hours enriched
 // with { timeLabel, weather } (weather may be null — markers then show
-// dashes, honest-data rule).
-export function renderWeatherMarkers(handle, rows, t) {
+// dashes, honest-data rule). `mode` mirrors Delacau: 'all' shows every hour
+// with compact icons, 'key' shows start/quarters/finish plus rain
+// transitions with full-size icons.
+export function renderWeatherMarkers(handle, rows, t, mode = 'all') {
   handle.weatherLayer.clearLayers();
-  const compact = rows.length > KEY_HOURS_THRESHOLD;
-  const keys = compact ? keyIndexes(rows) : null;
+  const keys = mode === 'all' ? null : keyIndexes(rows);
   rows.forEach((row, i) => {
     if (keys && !keys.has(i)) return;
-    const marker = L.marker([row.lat, row.lon], { icon: markerIcon(row, compact) });
+    const marker = L.marker([row.lat, row.lon], { icon: markerIcon(row, mode === 'all') });
     marker.bindPopup(popupHtml(row, t), { autoPan: true, keepInView: true, autoPanPadding: [18, 72], offset: [0, -8] });
     marker.addTo(handle.weatherLayer);
   });
