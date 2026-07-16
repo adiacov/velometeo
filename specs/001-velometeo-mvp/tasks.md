@@ -60,8 +60,8 @@ is independently implementable and testable.
 **Goal**: past pages render archive data labeled "observed"; recent-past uses `past_days`.
 **Independent test**: quickstart walkthrough 4.
 
-- [ ] T024 [US3] Wire archive + past_days branches of `assets/js/lib/weather-api.js` into `assets/js/event-page.js`: provenance-driven page label (forecast / recorded / observed), archive's missing `precipitation_probability` → `—`
-- [ ] T025 [US3] Verify quickstart walkthrough 4 for both a >7-days-past and a 2–5-days-past date
+- [X] T024 [US3] Wire archive + past_days branches of `assets/js/lib/weather-api.js` into `assets/js/event-page.js`: provenance-driven page label (forecast / recorded / observed), archive's missing `precipitation_probability` → `—`
+- [X] T025 [US3] Verify quickstart walkthrough 4 for both a >7-days-past and a 2–5-days-past date
 
 ## Phase 6: User Story 4 — pace mode (P4)
 
