@@ -4,11 +4,11 @@ Single canonical current-context entrypoint for this repository.
 
 ## Current status
 
-MVP implemented and deployed: all 10 phases (36 tasks) of
-`specs/001-velometeo-mvp/tasks.md` are complete on branch
-`001-velometeo-mvp`, phase-gated with owner review after each phase.
-**Live at https://adiacov.github.io/velometeo/** (Pages currently deploys
-from the feature branch). 53 unit tests green (`npm test`). Post-plan UX
+MVP implemented, merged to `main` (fast-forward, 2026-07-16), and
+deployed: all 10 phases (36 tasks) of `specs/001-velometeo-mvp/tasks.md`
+complete, phase-gated with owner review after each phase.
+**Live at https://adiacov.github.io/velometeo/** (Pages deploys from
+`main`, root). 53 unit tests green (`npm test`). Post-plan UX
 changes driven by owner feedback are recorded in git history (map moved to
 a dedicated page Delacau-style, fit button removed, grouped topbar pills,
 sections start folded, 27 km/h pace added, howto note, dictionary
@@ -20,9 +20,6 @@ None — awaiting owner decisions to close the milestone.
 
 ## Next action
 
-- Owner: merge `001-velometeo-mvp` → `main`, then switch the GitHub Pages
-  source to `main` (Settings → Pages), since it now points at the feature
-  branch.
 - Owner: decide the Delacau URL story (link/redirect from the old
   `delacau-200-brm-weather-forecast` page) — deliberately out of MVP scope
   (FR-028 kept the old page untouched).
