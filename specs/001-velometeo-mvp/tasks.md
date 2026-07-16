@@ -97,9 +97,9 @@ is independently implementable and testable.
 
 ## Phase 10: Polish & cross-cutting
 
-- [ ] T034 [P] Delacau parity check (SC-004): side-by-side against the live Delacau page; record deviations and fix or justify
-- [ ] T035 [P] Mobile performance pass (SC-001): ≤ 4 round-trips before weather renders, no oversized assets; test on throttled connection
-- [ ] T036 Update `STATE.md` (implementation status) and prune completed pointers per WORKFLOWS.md
+- [X] T034 [P] Delacau parity check (SC-004): side-by-side against the live Delacau page; record deviations and fix or justify
+- [X] T035 [P] Mobile performance pass (SC-001): ≤ 4 round-trips before weather renders, no oversized assets; test on throttled connection
+- [X] T036 Update `STATE.md` (implementation status) and prune completed pointers per WORKFLOWS.md
 
 ## Dependencies & execution order
 

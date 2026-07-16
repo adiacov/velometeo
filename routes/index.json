@@ -7,14 +7,6 @@
       "date": "2026-05-31",
       "start": "06:00",
       "mode": "brevet"
-    },
-    {
-      "id": "demo-pace-training",
-      "name": "DEMO Antrenament (pace) — remove before publishing",
-      "gpx": "routes/delacau-200-brm.gpx",
-      "date": "2026-07-19",
-      "start": "08:00",
-      "mode": "pace"
     }
   ]
 }
