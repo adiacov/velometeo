@@ -25,6 +25,22 @@ are treated as fixed input, not re-opened here: fully static, curated routes
 only, no AccuWeather, client-side fetch from Open-Meteo, two scenario modes,
 fork-first distribution.
 
+## Clarifications
+
+### Session 2026-07-16
+
+- Q: How are the fast/typical brevet bands defined (max is always the
+  official ACP limit)? → A: A built-in per-distance table, tuned like
+  Delacau's 200 km → 8 h / 10 h / 13:30 (see FR-007 for the full table).
+- Q: Where does the ride start time come from (config has only a date)? →
+  A: A required `start` field (HH:MM, event-local time) in every event
+  config.
+- Q: How do riders compare weather models for one event? → A: A single
+  event page with a model switcher; the selected model drives ALL visuals
+  (tables, map markers, wind arrows) at once and persists across pages and
+  visits — mirroring Delacau's active-source behavior, where a chosen
+  provider carries through every section and map without re-selection.
+
 ## Research Findings *(verified 2026-07-16)*
 
 ### ACP brevet time limits (authoritative)
@@ -229,7 +245,8 @@ verify persistence; switch provider and verify data changes accordingly.
 ### User Story 6 - Curator adds a route in two files (Priority: P6)
 
 The repo owner drops a GPX into `routes/`, adds one config entry (name, gpx
-path, date, mode), commits and pushes. The event page and index entry exist
+path, date, start time, mode), commits and pushes. The event page and index
+entry exist
 on next deploy. A helper script automates the copy/config/commit steps into
 one command.
 
@@ -248,7 +265,8 @@ verify the event goes live with no HTML/CSS/JS edits.
    **Then** checkpoints are shown; **Given** it has none, **Then** the
    checkpoint display is silently omitted (weather markers are unaffected —
    they are positioned by time/distance along the track).
-3. **Given** the helper script is run with a GPX path, name, date, and mode,
+3. **Given** the helper script is run with a GPX path, name, date, start
+   time, and mode,
    **When** it completes, **Then** the route file is in place and the config
    updated, ready to commit (or committed and pushed, per its options).
 
@@ -309,7 +327,8 @@ following only the README; site works with their route.
 
 - **FR-001**: The system MUST render one event page per config entry, where
   a config entry consists of: display name, GPX file reference, event date,
-  and scenario mode (`brevet` or `pace`).
+  start time (HH:MM, event-local — required), and scenario mode (`brevet`
+  or `pace`).
 - **FR-002**: The system MUST derive route length and geometry exclusively
   from the GPX track — never from config.
 - **FR-003**: The system MUST display checkpoints when the GPX contains
@@ -328,14 +347,20 @@ following only the README; site works with their route.
   13:30, 300 → 20:00, 400 → 27:00, 600 → 40:00, 1000 → 75:00, matching the
   nearest standard distance to the measured GPX length. 1200 km → 90:00 MAY
   be supported, labeled as Randonneurs Mondiaux (not BRM).
-- **FR-007**: In `brevet` mode, the system MUST display several finish-time
-  bands (fast / typical / maximum cutoff) so riders of different preparation
-  levels find themselves. The maximum band is the official limit; the
-  fast band must be realistic, not the theoretical minimum.
-    [NEEDS CLARIFICATION: how are the fast and typical bands defined —
-    fixed fractions of the max time, a small per-distance table (e.g.
-    200 km: 8 h / 10 h / 13:30 like Delacau), or curator-overridable
-    per event?]
+- **FR-007**: In `brevet` mode, the system MUST display three finish-time
+  bands (fast / typical / maximum cutoff) from a built-in per-distance
+  table; the maximum band is always the official limit. The table
+  (fast ≈ 60%, typical ≈ 75% of the limit, rounded to rider-friendly
+  hours; the 200 row is the proven Delacau trio):
+
+  | Distance | Fast | Typical | Max (official) |
+  |----------|------|---------|----------------|
+  | 200 km   | 8 h  | 10 h    | 13:30          |
+  | 300 km   | 12 h | 15 h    | 20:00          |
+  | 400 km   | 16 h | 20 h    | 27:00          |
+  | 600 km   | 24 h | 30 h    | 40:00          |
+  | 1000 km  | 45 h | 56 h    | 75:00          |
+  | 1200 km  | 54 h | 68 h    | 90:00 (RM)     |
 - **FR-008**: In `pace` mode, the system MUST display scenarios at fixed
   average speeds of 20, 25, and 30 km/h over the GPX-measured length.
 - **FR-009**: A page MUST show scenarios of exactly one mode, per config.
@@ -349,7 +374,10 @@ following only the README; site works with their route.
   there MUST be no build-time or scheduled weather generation.
 - **FR-012**: For upcoming events within the forecast horizon, the system
   MUST use Open-Meteo forecast data; at least the ECMWF and ICON models MUST
-  be available for comparison, labeled by name.
+  be available for comparison, labeled by name. Model selection happens on
+  the event page (single page per event, no per-model pages); the selected
+  model MUST drive all visuals at once (tables, map markers, wind arrows)
+  and MUST persist across pages and visits, like the theme choice.
 - **FR-013**: For past events, the system MUST show actual observed weather
   for event day, clearly labeled as observed (not forecast); while archive
   data is not yet available (~5 days), it MUST fall back to recent-past data
@@ -400,8 +428,9 @@ following only the README; site works with their route.
 ### Key Entities
 
 - **Event**: one curated ride page. Attributes: display name, GPX
-  reference, date, scenario mode. Derived: route geometry/length,
-  upcoming/past status, brevet distance class (brevet mode).
+  reference, date, start time, scenario mode. Derived: route
+  geometry/length, upcoming/past status, brevet distance class (brevet
+  mode).
 - **Route (GPX)**: the track geometry (source of length and positions) and
   optional waypoints (checkpoints).
 - **Scenario**: a labeled finish-time band (brevet) or average speed

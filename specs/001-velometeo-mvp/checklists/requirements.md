@@ -15,9 +15,9 @@
 
 ## Requirement Completeness
 
-- [ ] No [NEEDS CLARIFICATION] markers remain — **1 open**: FR-007 brevet
-  band definition (deliberately deferred to `/speckit-clarify` with the user)
-- [x] Requirements are testable and unambiguous (except FR-007 pending)
+- [x] No [NEEDS CLARIFICATION] markers remain — FR-007 resolved in the
+  2026-07-16 clarification session (per-distance band table)
+- [x] Requirements are testable and unambiguous
 - [x] Success criteria are measurable
 - [x] Success criteria are technology-agnostic (no implementation details)
 - [x] All acceptance scenarios are defined
@@ -34,6 +34,6 @@
 
 ## Notes
 
-- The single open item (FR-007 fast/typical brevet bands) is a product
-  decision listed in BRIEF.md's Open Questions; it goes to the user in the
-  clarify phase rather than being guessed here.
+- All items passing after the 2026-07-16 clarification session (3 questions:
+  brevet bands table, required start-time config field, single-page model
+  switcher with persistent selection). Checklist: 15/16 → 16/16.
