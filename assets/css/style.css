@@ -187,9 +187,11 @@ td:first-child{font-weight:850;color:var(--text)}
    inline on the single event page). */
 .model-switcher{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 
-/* velometeo additions: "all events" home link, top-left in the topbar. */
-.home-link{margin-right:auto}
-.home-link a{white-space:nowrap}
+/* velometeo additions: settings dropdown (gear groups language + theme). */
+.settings{position:relative}
+.settings-panel{position:absolute;right:0;top:calc(100% + 8px);display:flex;align-items:center;gap:9px;padding:10px;background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);z-index:1100;white-space:nowrap}
+.settings-panel[hidden]{display:none}
+.controls .lang a{white-space:nowrap}
 
 /* velometeo: map header has 3 controls (no fit button). */
 .compact-map-header{grid-template-columns:repeat(3,minmax(0,1fr))}

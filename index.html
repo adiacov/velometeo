@@ -11,12 +11,17 @@
   <header class="hero">
     <div class="topbar">
       <div class="controls">
-        <nav class="lang">
-          <a href="#" data-lang="ro">RO</a>
-          <a href="#" data-lang="en">EN</a>
-          <a href="#" data-lang="ru">RU</a>
-        </nav>
-        <button class="theme-toggle" type="button" data-theme-toggle>🌙</button>
+        <div class="settings">
+          <button class="theme-toggle" type="button" data-settings-toggle aria-expanded="false" aria-label="Settings">⚙️</button>
+          <div class="settings-panel" data-settings-panel hidden>
+            <nav class="lang">
+              <a href="#" data-lang="ro">RO</a>
+              <a href="#" data-lang="en">EN</a>
+              <a href="#" data-lang="ru">RU</a>
+            </nav>
+            <button class="theme-toggle" type="button" data-theme-toggle>🌙</button>
+          </div>
+        </div>
       </div>
     </div>
     <h1 data-i18n="site.title">velometeo</h1>
@@ -28,6 +33,7 @@
   </div>
 </div>
 <script src="assets/js/theme.js" defer></script>
+<script src="assets/js/settings.js" defer></script>
 <script type="module" src="assets/js/index-page.js"></script>
 </body>
 </html>

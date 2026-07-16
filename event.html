@@ -10,16 +10,21 @@
 <div class="page">
   <header class="hero">
     <div class="topbar">
-      <nav class="lang home-link">
-        <a href="index.html" data-i18n="back.index">Toate evenimentele</a>
-      </nav>
       <div class="controls">
         <nav class="lang">
-          <a href="#" data-lang="ro">RO</a>
-          <a href="#" data-lang="en">EN</a>
-          <a href="#" data-lang="ru">RU</a>
+          <a href="index.html" data-i18n="back.index">Toate evenimentele</a>
         </nav>
-        <button class="theme-toggle" type="button" data-theme-toggle>🌙</button>
+        <div class="settings">
+          <button class="theme-toggle" type="button" data-settings-toggle aria-expanded="false" aria-label="Settings">⚙️</button>
+          <div class="settings-panel" data-settings-panel hidden>
+            <nav class="lang">
+              <a href="#" data-lang="ro">RO</a>
+              <a href="#" data-lang="en">EN</a>
+              <a href="#" data-lang="ru">RU</a>
+            </nav>
+            <button class="theme-toggle" type="button" data-theme-toggle>🌙</button>
+          </div>
+        </div>
       </div>
     </div>
     <h1 data-event-name>…</h1>
@@ -44,6 +49,7 @@
 
 </div>
 <script src="assets/js/theme.js" defer></script>
+<script src="assets/js/settings.js" defer></script>
 <script type="module" src="assets/js/event-page.js"></script>
 </body>
 </html>
