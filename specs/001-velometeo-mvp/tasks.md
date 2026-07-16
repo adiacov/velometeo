@@ -84,8 +84,8 @@ is independently implementable and testable.
 **Goal**: two-file addition works; helper script automates it.
 **Independent test**: quickstart walkthrough 11.
 
-- [ ] T030 [P] [US6] Implement `tools/add_route.py` per contracts/add-route-cli.md (stdlib only: validation, GPX copy, atomic manifest update, optional --commit)
-- [ ] T031 [US6] Verify quickstart walkthrough 11 with a spare GPX; confirm only two paths changed (`routes/<id>.gpx`, `routes/index.json`)
+- [X] T030 [P] [US6] Implement `tools/add_route.py` per contracts/add-route-cli.md (stdlib only: validation, GPX copy, atomic manifest update, optional --commit)
+- [X] T031 [US6] Verify quickstart walkthrough 11 with a spare GPX; confirm only two paths changed (`routes/<id>.gpx`, `routes/index.json`)
 
 ## Phase 9: User Story 7 — fork documentation (P7)
 
