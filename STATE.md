@@ -20,6 +20,8 @@ None — awaiting owner decisions to close the milestone.
 
 ## Next action
 
+- Add the next real routes (the 300+200 brevet) via `tools/add_route.py` —
+  first real-world test of the two-file promise (SC-003).
 - Owner: decide the Delacau URL story (link/redirect from the old
   `delacau-200-brm-weather-forecast` page) — deliberately out of MVP scope
   (FR-028 kept the old page untouched).
