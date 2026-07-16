@@ -51,9 +51,9 @@ is independently implementable and testable.
 **Goal**: site root lists all events Upcoming/Past, newest first.
 **Independent test**: quickstart walkthroughs 1, 10.
 
-- [ ] T021 [P] [US2] Implement `assets/js/index-page.js`: fetch manifest, validate entries (skip broken with console warning, FR-005), split Upcoming/Past by event-local date, sort newest-first, render linked list
-- [ ] T022 [US2] Build `index.html`: minimal landing (site name, one-line what-is-this, the two groups); wire `index-page.js`, `theme.js`, `i18n.js`
-- [ ] T023 [US2] Verify quickstart walkthroughs 1 and 10 (needs a second temporary manifest entry)
+- [X] T021 [P] [US2] Implement `assets/js/index-page.js`: fetch manifest, validate entries (skip broken with console warning, FR-005), split Upcoming/Past by event-local date, sort newest-first, render linked list
+- [X] T022 [US2] Build `index.html`: minimal landing (site name, one-line what-is-this, the two groups); wire `index-page.js`, `theme.js`, `i18n.js`
+- [X] T023 [US2] Verify quickstart walkthroughs 1 and 10 (needs a second temporary manifest entry)
 
 ## Phase 5: User Story 3 — past events show observed weather (P3)
 

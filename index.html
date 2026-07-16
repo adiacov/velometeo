@@ -11,14 +11,23 @@
   <header class="hero">
     <div class="topbar">
       <div class="controls">
+        <nav class="lang">
+          <a href="#" data-lang="ro">RO</a>
+          <a href="#" data-lang="en">EN</a>
+          <a href="#" data-lang="ru">RU</a>
+        </nav>
         <button class="theme-toggle" type="button" data-theme-toggle>🌙</button>
       </div>
     </div>
-    <h1>velometeo</h1>
-    <p class="subtitle">Vremea de-a lungul rutei tale de ciclism.</p>
-    <!-- Placeholder: event list rendered by assets/js/index-page.js (tasks.md T021/T022) -->
+    <h1 data-i18n="site.title">velometeo</h1>
+    <p class="subtitle" data-i18n="site.tagline">Vremea de-a lungul rutei tale de ciclism.</p>
   </header>
+
+  <div data-events>
+    <div class="note" data-i18n="event.loading">Se incarca...</div>
+  </div>
 </div>
 <script src="assets/js/theme.js" defer></script>
+<script type="module" src="assets/js/index-page.js"></script>
 </body>
 </html>
