@@ -36,7 +36,9 @@ function applyStatic(root = document) {
 }
 
 async function load(next) {
-  const res = await fetch(`assets/i18n/${next}.json`);
+  // Revalidate instead of trusting the HTTP cache: after a deploy, a stale
+  // cached dictionary next to fresh HTML would render raw i18n keys.
+  const res = await fetch(`assets/i18n/${next}.json`, { cache: 'no-cache' });
   if (!res.ok) throw new Error(`Cannot load dictionary ${next}`);
   dict = await res.json();
   lang = next;
