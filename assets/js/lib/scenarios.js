@@ -16,7 +16,7 @@ export const BREVET_BANDS = {
 
 export const STANDARD_DISTANCES = Object.keys(BREVET_BANDS).map(Number);
 
-export const PACE_SPEEDS_KMH = [20, 25, 30];
+export const PACE_SPEEDS_KMH = [20, 25, 27, 30];
 
 // Deviation beyond this fraction from the nearest standard distance is
 // surfaced to the curator (spec edge case; data-model Route validation).

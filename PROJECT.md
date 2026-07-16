@@ -50,7 +50,7 @@ Scenario times come from the mode:
   300 → 20 h, 400 → 27 h, 600 → 40 h, 1000 → 75 h, 1200 → 90 h). Show
   several bands (fast / typical / max cutoff) so riders of different
   preparation levels find themselves.
-- **pace** — fixed average speeds (20 / 25 / 30 km/h) × measured route
+- **pace** — fixed average speeds (20 / 25 / 27 / 30 km/h) × measured route
   length, for non-brevet rides.
 
 Weather is fetched **in the visitor's browser** from Open-Meteo (free, no

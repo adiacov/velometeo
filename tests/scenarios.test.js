@@ -42,10 +42,10 @@ test('brevet scenarios: three bands, max = official limit', () => {
   assert.ok(Math.abs(s[0].speedKmh - 207 / 8) < 1e-9);
 });
 
-test('pace scenarios: 20/25/30 km/h over measured length', () => {
+test('pace scenarios: 20/25/27/30 km/h over measured length', () => {
   const s = paceScenarios(210);
-  assert.deepEqual(s.map((x) => x.kind), ['pace-20', 'pace-25', 'pace-30']);
-  assert.equal(s[2].durationHours, 7); // 210 / 30
+  assert.deepEqual(s.map((x) => x.kind), ['pace-20', 'pace-25', 'pace-27', 'pace-30']);
+  assert.equal(s[3].durationHours, 7); // 210 / 30
 });
 
 // Straight 4-point north-going track for position checks.

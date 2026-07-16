@@ -38,7 +38,7 @@ changes require a constitution-level decision.
   ≥ 2 points. `<wpt>` waypoints are optional checkpoints.
 - `date`: `YYYY-MM-DD`; `start`: `HH:MM` (24-h), both in the event's local
   timezone.
-- `mode`: `brevet` (ACP band scenarios) or `pace` (20/25/30 km/h) — never
+- `mode`: `brevet` (ACP band scenarios) or `pace` (20/25/27/30 km/h) — never
   both.
 - `timezone`: optional IANA name, defaults to `Europe/Chisinau`.
 - Order in the array is irrelevant; pages sort by `date`.

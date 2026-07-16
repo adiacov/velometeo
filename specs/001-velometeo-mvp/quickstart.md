@@ -35,7 +35,7 @@ day-context labels.
    weather labeled as such (archive API in the network tab). With a date
    2–5 days ago, expect recent-past data (forecast API with `past_days`).
 5. **Pace mode (US4)**: add a `mode: "pace"` event. Expect exactly the
-   20/25/30 km/h scenarios; durations = measured length ÷ speed.
+   20/25/27/30 km/h scenarios; durations = measured length ÷ speed.
 6. **Model switch (US5/Q3)**: toggle ECMWF↔ICON. Expect one new fetch,
    table AND map re-render, choice survives reload and page navigation.
 7. **Language & theme (US5)**: switch RO/EN/RU and light/dark; both

@@ -200,7 +200,7 @@ page renders observed data with an "observed" label.
 
 For a non-brevet route, the config sets `pace` mode; the page shows the
 same weather-along-route view but with scenarios at fixed average speeds
-(20 / 25 / 30 km/h) × route length measured from the GPX.
+(20 / 25 / 27 / 30 km/h) × route length measured from the GPX.
 
 **Why this priority**: second of the two scenario modes; extends the site
 from brevets to regular riding, but brevets are the founding use case.
@@ -212,7 +212,7 @@ scenario durations equal measured length ÷ each speed.
 
 1. **Given** a route config in pace mode, **When** its page loads, **Then**
    exactly the pace scenarios (not brevet bands) appear, with durations
-   derived from GPX-measured length at 20/25/30 km/h.
+   derived from GPX-measured length at 20/25/27/30 km/h.
 2. **Given** any route config, **When** modes are evaluated, **Then**
    exactly one mode's scenarios are shown — never both.
 
@@ -363,7 +363,7 @@ following only the README; site works with their route.
   | 1000 km  | 45 h | 56 h    | 75:00          |
   | 1200 km  | 54 h | 68 h    | 90:00 (RM)     |
 - **FR-008**: In `pace` mode, the system MUST display scenarios at fixed
-  average speeds of 20, 25, and 30 km/h over the GPX-measured length.
+  average speeds of 20, 25, 27, and 30 km/h over the GPX-measured length.
 - **FR-009**: A page MUST show scenarios of exactly one mode, per config.
 - **FR-010**: For each scenario and each hour of the ride, the system MUST
   compute the rider's position along the route (assuming constant average

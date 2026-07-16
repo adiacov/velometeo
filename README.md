@@ -7,7 +7,7 @@ event page, hosted for free on GitHub Pages.
 - **Brevet mode**: scenarios from the official ACP time limits
   (200 km → 13:30, 300 → 20:00, 400 → 27:00, 600 → 40:00, 1000 → 75:00),
   shown as fast / typical / official-limit bands.
-- **Pace mode**: scenarios at 20 / 25 / 30 km/h average speed.
+- **Pace mode**: scenarios at 20 / 25 / 27 / 30 km/h average speed.
 - Weather is fetched **in the visitor's browser** from
   [Open-Meteo](https://open-meteo.com) (free, no API key) — the forecast is
   fresh on every page load, and pages for past events permanently show the
@@ -77,7 +77,7 @@ most systems).
 | `gpx` | yes | Path to the GPX file inside the repo |
 | `date` | yes | Event date, `YYYY-MM-DD` |
 | `start` | yes | Start time, `HH:MM`, local to the event |
-| `mode` | yes | `brevet` (ACP bands) or `pace` (20/25/30 km/h) |
+| `mode` | yes | `brevet` (ACP bands) or `pace` (20/25/27/30 km/h) |
 | `timezone` | no | IANA zone, default `Europe/Chisinau` — set this if your event is elsewhere |
 
 Notes:
