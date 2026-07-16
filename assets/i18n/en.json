@@ -41,5 +41,7 @@
   "back.index": "All events",
   "map.back": "← Back",
   "map.allHours": "All hours",
-  "map.keyHours": "Key hours"
+  "map.keyHours": "Key hours",
+  "howto.title": "How to read this forecast",
+  "howto.text": "Pick the scenario closest to your pace. Each hour shows the approximate kilometer and the likely weather in that area — if your pace differs, use the kilometer as your reference. \"View on map\" shows the same weather along the route."
 }
