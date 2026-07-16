@@ -1,0 +1,24 @@
+.DS_Store
+.env
+.env.*
+*.log
+
+# Agent Workspace legacy local cache
+.agent/
+
+# Agent Workspace sync working files (baseline snapshots + transient artifacts)
+.agent-workspace/baseline/
+*.bak
+*.merge
+
+# Transient handoff outbox (delivered downstream, not project history)
+HANDOFF.md
+
+# Local/private identity, memory, or secrets
+MEMORY.md
+DECISIONS.local.md
+LOCAL.md
+PRIVATE.md
+secrets/
+*.pem
+*.key

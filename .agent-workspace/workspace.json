@@ -1,0 +1,43 @@
+{
+  "agents": [
+    "claude"
+  ],
+  "createdAt": "2026-07-16T11:51:50Z",
+  "generatedFiles": {
+    ".gitignore": {
+      "kind": "default",
+      "template": "default/.gitignore"
+    },
+    "AGENTS.md": {
+      "kind": "adapter",
+      "template": "adapters/AGENTS.md"
+    },
+    "CLAUDE.md": {
+      "agent": "claude",
+      "kind": "adapter",
+      "template": "adapters/claude/CLAUDE.md"
+    },
+    "ENGINEERING.md": {
+      "kind": "profile",
+      "template": "profiles/software/ENGINEERING.md"
+    },
+    "PROJECT.md": {
+      "kind": "context",
+      "template": "default/PROJECT.md"
+    },
+    "STATE.md": {
+      "kind": "context",
+      "template": "default/STATE.md"
+    },
+    "WORKFLOWS.md": {
+      "kind": "default",
+      "template": "default/WORKFLOWS.md"
+    }
+  },
+  "profile": "code",
+  "schemaVersion": 1,
+  "templateRevision": "unknown",
+  "toolName": "agent-ws",
+  "toolVersion": "unknown",
+  "updatedAt": "2026-07-16T11:51:50Z"
+}
