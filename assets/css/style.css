@@ -189,3 +189,7 @@ td:first-child{font-weight:850;color:var(--text)}
 .event-link:hover{transform:translateY(-1px);border-color:var(--accent);background:var(--accent-soft)}
 .event-link b{font-size:16px;letter-spacing:-.01em}
 .event-date{color:var(--muted);font-size:14px;white-space:nowrap}
+
+/* velometeo additions: weather model switcher (Delacau's source links,
+   inline on the single event page). */
+.model-switcher{display:flex;align-items:center;gap:10px;flex-wrap:wrap}

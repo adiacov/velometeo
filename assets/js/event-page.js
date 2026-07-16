@@ -1,9 +1,13 @@
 // Event page controller: ?event=<id> → manifest entry → GPX → scenarios →
 // one batched Open-Meteo request → table + map. Broken input degrades to a
 // friendly message (FR-005); weather failure keeps route and map (FR-017).
+// Rendering is repeatable: language switch re-renders, model switch
+// refetches then re-renders (clarification Q3 — one page, switcher drives
+// all visuals, choice persists).
 import { parseGpx } from './lib/gpx.js';
 import { brevetScenarios, paceScenarios, classifyBrevet, scenarioHours } from './lib/scenarios.js';
 import {
+  MODELS,
   modelByKey,
   selectEventState,
   daysUntilForecast,
@@ -26,7 +30,7 @@ import {
   degreesToCardinal,
   windRelative,
 } from './lib/format.js';
-import { initI18n, t } from './i18n.js';
+import { initI18n, t, onLangChange } from './i18n.js';
 import { initMap, fitRoute, renderWeatherMarkers } from './map.js';
 
 const DEFAULT_TIMEZONE = 'Europe/Chisinau';
@@ -36,10 +40,6 @@ const $ = (sel) => document.querySelector(sel);
 
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>'"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]));
-}
-
-function showError(key) {
-  $('[data-event-status]').innerHTML = `<div class="note">${escapeHtml(t(key))}</div>`;
 }
 
 function scenarioTitle(scenario, startHhMm, lastHour) {
@@ -123,6 +123,16 @@ function collectPositions(scenarios) {
 async function main() {
   await initI18n();
 
+  // Errors before the page can exist: message survives language switches.
+  let fatalErrorKey = null;
+  const showError = (key) => {
+    fatalErrorKey = key;
+    $('[data-event-status]').innerHTML = `<div class="note">${escapeHtml(t(key))}</div>`;
+  };
+  onLangChange(() => {
+    if (fatalErrorKey) showError(fatalErrorKey);
+  });
+
   const id = new URLSearchParams(window.location.search).get('event');
 
   let manifest;
@@ -175,79 +185,114 @@ async function main() {
   }
   const scenarios = base.map((s) => ({ ...s, hours: scenarioHours(s, route, entry.start) }));
   const maxDurationHours = Math.max(...scenarios.map((s) => s.durationHours));
+  const eventTimes = { date: entry.date, start: entry.start, maxDurationHours };
+  const timezone = entry.timezone || DEFAULT_TIMEZONE;
 
   const mapHandle = initMap('route-map', route, route.waypoints);
   $('[data-fit-route]').addEventListener('click', () => fitRoute(mapHandle));
 
-  // Temporal state for the persisted model choice.
-  const timezone = entry.timezone || DEFAULT_TIMEZONE;
-  const model = modelByKey(localStorage.getItem(MODEL_STORAGE_KEY));
-  const now = nowInTimeZone(timezone);
-  const eventTimes = { date: entry.date, start: entry.start, maxDurationHours };
-  const state = selectEventState(eventTimes, now, model.horizonDays);
-
-  const statusEl = $('[data-event-status]');
-  const provenance = provenanceOf(state);
-  if (provenance) {
-    statusEl.innerHTML = `<span class="pill"><b>${escapeHtml(t(`provenance.${provenance}`))}</b> · ${escapeHtml(model.label)}</span>`;
-  }
-
-  // Weather lookup per scenario hour; null until (unless) the fetch lands.
-  let locations = null;
   const { positions, indexed } = collectPositions(scenarios);
 
-  if (state === 'waiting') {
-    const days = Math.ceil(daysUntilForecast(eventTimes, now, model.horizonDays));
-    statusEl.innerHTML = `<div class="note">${escapeHtml(t('weather.waiting', { days }))}</div>`;
-  } else {
+  // Mutable view state: model choice, fetch outcome, open scenario.
+  let modelKey = modelByKey(localStorage.getItem(MODEL_STORAGE_KEY)).key;
+  let state = null;
+  let locations = null;
+  let fetchFailed = false;
+  let openKind = entry.mode === 'pace' ? indexed[1].kind : 'typical';
+
+  async function loadWeather() {
+    const model = modelByKey(modelKey);
+    const now = nowInTimeZone(timezone);
+    state = selectEventState(eventTimes, now, model.horizonDays);
+    locations = null;
+    fetchFailed = false;
+    if (state === 'waiting') return;
     try {
       const res = await fetch(buildWeatherUrl({ state, positions, event: eventTimes, modelKey: model.key, timezone }));
       if (!res.ok) throw new Error(String(res.status));
       locations = normalizeLocations(await res.json());
     } catch (err) {
       console.warn('velometeo: weather fetch failed', err);
-      statusEl.innerHTML = `<div class="note">${escapeHtml(t('weather.unavailable'))}</div>`;
+      fetchFailed = true;
     }
   }
 
-  const enriched = indexed.map((s) => ({
-    ...s,
-    rows: s.hours.map((h) => ({
-      ...h,
-      timeLabel: formatHour(h.clockTime, h.dayOffset),
-      weather: locations ? weatherAt(locations[h.positionIndex], localIsoHour(entry.date, h)) : null,
-    })),
-  }));
+  function switcherHtml(model) {
+    const links = MODELS.map((m) => `<a href="#" data-model="${escapeHtml(m.key)}" class="${m.key === model.key ? 'active' : ''}">${escapeHtml(m.label)}</a>`).join('');
+    return `<div class="model-switcher"><span class="pill"><b data-i18n="model.title">${escapeHtml(t('model.title'))}</b></span><div class="source-links">${links}</div></div>`;
+  }
 
-  // Scenario sections: collapsed <details>, one open at a time (Delacau UX);
-  // the open scenario drives the map markers.
-  const container = $('[data-scenarios]');
-  container.innerHTML = enriched
-    .map((s, i) => `<details class="scenario" data-scenario="${escapeHtml(s.kind)}" ${s.kind === 'typical' || (entry.mode === 'pace' && i === 1) ? 'open' : ''}>
-      <summary class="scenario-head"><h3>${escapeHtml(scenarioTitle(s, entry.start, s.rows[s.rows.length - 1]))}</h3></summary>
-      ${tableHtml(s.rows)}
-      ${cardsHtml(s.rows)}
-    </details>`)
-    .join('');
+  function statusHtml(model) {
+    const now = nowInTimeZone(timezone);
+    if (state === 'waiting') {
+      const days = Math.ceil(daysUntilForecast(eventTimes, now, model.horizonDays));
+      return `<div class="note">${escapeHtml(t('weather.waiting', { days }))}</div>`;
+    }
+    const provenance = provenanceOf(state);
+    const pill = `<span class="pill"><b>${escapeHtml(t(`provenance.${provenance}`))}</b> · ${escapeHtml(model.label)}</span>`;
+    return fetchFailed ? `${pill}<div class="note">${escapeHtml(t('weather.unavailable'))}</div>` : pill;
+  }
 
-  const byKind = new Map(enriched.map((s) => [s.kind, s]));
-  const details = [...container.querySelectorAll('.scenario')];
-  details.forEach((el) => {
-    el.addEventListener('toggle', () => {
-      if (!el.open) return;
-      details.forEach((other) => {
-        if (other !== el) other.open = false;
+  function renderAll() {
+    const model = modelByKey(modelKey);
+
+    $('[data-event-status]').innerHTML = statusHtml(model);
+    $('[data-model-switcher]').innerHTML = switcherHtml(model);
+    document.querySelectorAll('[data-model]').forEach((el) => {
+      el.addEventListener('click', async (e) => {
+        e.preventDefault();
+        if (el.dataset.model === modelKey) return;
+        modelKey = modelByKey(el.dataset.model).key;
+        localStorage.setItem(MODEL_STORAGE_KEY, modelKey);
+        await loadWeather(); // lazy: only the selected model is fetched
+        renderAll();
       });
-      renderWeatherMarkers(mapHandle, byKind.get(el.dataset.scenario).rows, t);
     });
+
+    const enriched = indexed.map((s) => ({
+      ...s,
+      rows: s.hours.map((h) => ({
+        ...h,
+        timeLabel: formatHour(h.clockTime, h.dayOffset),
+        weather: locations ? weatherAt(locations[h.positionIndex], localIsoHour(entry.date, h)) : null,
+      })),
+    }));
+    const byKind = new Map(enriched.map((s) => [s.kind, s]));
+    if (!byKind.has(openKind)) openKind = enriched[0].kind;
+
+    const container = $('[data-scenarios]');
+    container.innerHTML = enriched
+      .map((s) => `<details class="scenario" data-scenario="${escapeHtml(s.kind)}" ${s.kind === openKind ? 'open' : ''}>
+        <summary class="scenario-head"><h3>${escapeHtml(scenarioTitle(s, entry.start, s.rows[s.rows.length - 1]))}</h3></summary>
+        ${tableHtml(s.rows)}
+        ${cardsHtml(s.rows)}
+      </details>`)
+      .join('');
+
+    const details = [...container.querySelectorAll('.scenario')];
+    details.forEach((el) => {
+      el.addEventListener('toggle', () => {
+        if (!el.open) return;
+        openKind = el.dataset.scenario;
+        details.forEach((other) => {
+          if (other !== el) other.open = false;
+        });
+        renderWeatherMarkers(mapHandle, byKind.get(openKind).rows, t);
+      });
+    });
+    renderWeatherMarkers(mapHandle, byKind.get(openKind).rows, t);
+  }
+
+  onLangChange(() => {
+    if (!fatalErrorKey) renderAll(); // same data, new language (no refetch)
   });
-  const initiallyOpen = container.querySelector('.scenario[open]') || details[0];
-  if (initiallyOpen && !initiallyOpen.open) initiallyOpen.open = true;
-  renderWeatherMarkers(mapHandle, byKind.get(initiallyOpen.dataset.scenario).rows, t);
+
+  await loadWeather();
+  renderAll();
 }
 
 main().catch((err) => {
   console.error('velometeo: unexpected failure', err);
   const el = document.querySelector('[data-event-status]');
-  if (el) el.innerHTML = `<div class="note">${escapeHtml(t('weather.unavailable'))}</div>`;
+  if (el) el.innerHTML = '<div class="note">…</div>';
 });

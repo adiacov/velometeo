@@ -75,9 +75,9 @@ is independently implementable and testable.
 **Goal**: ECMWF/ICON switch drives all visuals and persists; language/theme switchers complete.
 **Independent test**: quickstart walkthroughs 6, 7.
 
-- [ ] T027 [US5] Implement model switcher pill on `event.html` (`assets/js/event-page.js`): lazy fetch on switch, re-render table + map markers + arrows, persist `velometeo.model` (clarification Q3)
-- [ ] T028 [P] [US5] Implement language switcher UI (RO/EN/RU pills in header) on both pages via `assets/js/i18n.js`; ensure dynamic content (tables, labels) re-renders on switch
-- [ ] T029 [US5] Verify quickstart walkthroughs 6 and 7 (persistence across reload and page navigation)
+- [X] T027 [US5] Implement model switcher pill on `event.html` (`assets/js/event-page.js`): lazy fetch on switch, re-render table + map markers + arrows, persist `velometeo.model` (clarification Q3)
+- [X] T028 [P] [US5] Implement language switcher UI (RO/EN/RU pills in header) on both pages via `assets/js/i18n.js`; ensure dynamic content (tables, labels) re-renders on switch
+- [X] T029 [US5] Verify quickstart walkthroughs 6 and 7 (persistence across reload and page navigation)
 
 ## Phase 8: User Story 6 — curator route addition (P6)
 

@@ -1,7 +1,8 @@
 // Index page controller: manifest → validated events → Upcoming/Past lists.
+// Lists re-render on language switch (headings are built dynamically).
 import { validEvents, splitEvents } from './lib/manifest.js';
 import { nowInTimeZone } from './lib/weather-api.js';
-import { initI18n, t } from './i18n.js';
+import { initI18n, t, onLangChange } from './i18n.js';
 
 const DEFAULT_TIMEZONE = 'Europe/Chisinau';
 
@@ -33,18 +34,23 @@ async function main() {
     console.warn(`velometeo: skipping manifest entry (${problem})`, entry);
   });
 
-  if (events.length === 0) {
-    container.innerHTML = `<div class="note">${escapeHtml(t('index.empty'))}</div>`;
-    return;
+  function render() {
+    if (events.length === 0) {
+      container.innerHTML = `<div class="note">${escapeHtml(t('index.empty'))}</div>`;
+      return;
+    }
+
+    const { upcoming, past } = splitEvents(events, (tz) => nowInTimeZone(tz || DEFAULT_TIMEZONE).date);
+
+    // Empty groups are hidden rather than shown as empty headings (CHK024).
+    container.innerHTML = [
+      upcoming.length ? `<section class="section"><h2>${escapeHtml(t('index.upcoming'))}</h2>${listHtml(upcoming)}</section>` : '',
+      past.length ? `<section class="section"><h2>${escapeHtml(t('index.past'))}</h2>${listHtml(past)}</section>` : '',
+    ].join('');
   }
 
-  const { upcoming, past } = splitEvents(events, (tz) => nowInTimeZone(tz || DEFAULT_TIMEZONE).date);
-
-  // Empty groups are hidden rather than shown as empty headings (CHK024).
-  container.innerHTML = [
-    upcoming.length ? `<section class="section"><h2>${escapeHtml(t('index.upcoming'))}</h2>${listHtml(upcoming)}</section>` : '',
-    past.length ? `<section class="section"><h2>${escapeHtml(t('index.past'))}</h2>${listHtml(past)}</section>` : '',
-  ].join('');
+  onLangChange(render);
+  render();
 }
 
 main().catch((err) => {
