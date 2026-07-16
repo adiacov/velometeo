@@ -1,0 +1,12 @@
+{
+  "events": [
+    {
+      "id": "delacau-200-brm",
+      "name": "Delacau 200 BRM",
+      "gpx": "routes/delacau-200-brm.gpx",
+      "date": "2026-05-31",
+      "start": "06:00",
+      "mode": "brevet"
+    }
+  ]
+}

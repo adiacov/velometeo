@@ -12,11 +12,11 @@ is independently implementable and testable.
 
 ## Phase 1: Setup
 
-- [ ] T001 Create static site skeleton: `index.html`, `event.html`, `assets/css/`, `assets/js/lib/`, `assets/i18n/`, `routes/`, `tools/`, `tests/fixtures/` per plan.md Project Structure
-- [ ] T002 [P] Copy `delacau-200-brm.gpx` from `../delacau-200-brm-weather-forecast/` into `routes/` and create `routes/index.json` with the Delacau entry (date 2026-05-31, start 06:00 — verified in the Delacau page's scenario headings, mode brevet) per contracts/routes-config.md
-- [ ] T003 [P] Copy-and-adapt `assets/theme.js` from Delacau (parametrize storage key to `velometeo.theme`) into `assets/js/theme.js`
-- [ ] T004 [P] Copy-and-adapt `assets/style.css` from Delacau into `assets/css/style.css` (keep pills, collapsed sections, theme variables; strip provider-page-specific rules)
-- [ ] T005 [P] Create test fixtures in `tests/fixtures/`: a small GPX with waypoints, one without, one malformed (from truncated Delacau GPX)
+- [X] T001 Create static site skeleton: `index.html`, `event.html`, `assets/css/`, `assets/js/lib/`, `assets/i18n/`, `routes/`, `tools/`, `tests/fixtures/` per plan.md Project Structure
+- [X] T002 [P] Copy `delacau-200-brm.gpx` from `../delacau-200-brm-weather-forecast/` into `routes/` and create `routes/index.json` with the Delacau entry (date 2026-05-31, start 06:00 — verified in the Delacau page's scenario headings, mode brevet) per contracts/routes-config.md
+- [X] T003 [P] Copy-and-adapt `assets/theme.js` from Delacau (parametrize storage key to `velometeo.theme`) into `assets/js/theme.js`
+- [X] T004 [P] Copy-and-adapt `assets/style.css` from Delacau into `assets/css/style.css` (keep pills, collapsed sections, theme variables; strip provider-page-specific rules)
+- [X] T005 [P] Create test fixtures in `tests/fixtures/`: a small GPX with waypoints, one without, one malformed (from truncated Delacau GPX)
 
 ## Phase 2: Foundational (blocking all user stories)
 
