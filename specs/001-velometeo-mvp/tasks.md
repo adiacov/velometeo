@@ -20,18 +20,18 @@ is independently implementable and testable.
 
 ## Phase 2: Foundational (blocking all user stories)
 
-- [ ] T006 [P] Implement `assets/js/lib/geo.js`: haversine distance, bearing between points, position interpolation along a cumulative-distance table (data-model Route/Scenario derivations)
-- [ ] T007 [P] Implement `assets/js/lib/gpx.js`: DOMParser-based GPX parsing → `{points, cumKm, waypoints}` with validation rules from data-model.md (≥2 track points, malformed → typed error)
-- [ ] T008 Implement `assets/js/lib/scenarios.js`: brevet band table (FR-007 table verbatim), nearest-standard-distance matching with >15% deviation warning, pace scenarios (20/25/30), per-hour `{clockTime, dayOffset, km, lat, lon, bearing}` derivation (FR-010); depends on T006
-- [ ] T009 Implement `assets/js/lib/weather-api.js`: event-state selection (forecast/past_days/archive/waiting per research D9), batched multi-coordinate request building per contracts/open-meteo.md, response slicing into WeatherPoint objects with provenance, model table (ECMWF/ICON) — verify live `models=` ids against the API while implementing
-- [ ] T010 [P] Implement `assets/js/lib/format.js`: dash-for-null (FR-016), km/h + °C + mm formatting, wind-relative (head/tail/cross) from bearing vs direction, day-context hour labels (FR-023)
-- [ ] T011 [P] Implement `assets/js/i18n.js`: dictionary fetch, `data-i18n` swap, `velometeo.lang` persistence, RO default (research D5)
-- [ ] T012 [P] Create `assets/i18n/ro.json`, `assets/i18n/en.json`, `assets/i18n/ru.json` with all UI strings (tone: Delacau pages, non-technical)
-- [ ] T013 [P] Unit tests `tests/geo.test.js` and `tests/gpx.test.js` against fixtures (distance sanity, waypoint presence/absence, malformed error)
-- [ ] T014 [P] Unit tests `tests/scenarios.test.js` (band table rows, 207 km → 200 class, >15% deviation warning, pace durations, midnight-crossing hour derivation)
-- [ ] T015 [P] Unit tests `tests/weather-api.test.js` (state selection boundary dates incl. today/2-days-past/8-days-past/20-days-future, request URL shape per contract, null slicing) and `tests/format.test.js` (dash rules, relative wind, day labels)
+- [X] T006 [P] Implement `assets/js/lib/geo.js`: haversine distance, bearing between points, position interpolation along a cumulative-distance table (data-model Route/Scenario derivations)
+- [X] T007 [P] Implement `assets/js/lib/gpx.js`: DOMParser-based GPX parsing → `{points, cumKm, waypoints}` with validation rules from data-model.md (≥2 track points, malformed → typed error)
+- [X] T008 Implement `assets/js/lib/scenarios.js`: brevet band table (FR-007 table verbatim), nearest-standard-distance matching with >15% deviation warning, pace scenarios (20/25/30), per-hour `{clockTime, dayOffset, km, lat, lon, bearing}` derivation (FR-010); depends on T006
+- [X] T009 Implement `assets/js/lib/weather-api.js`: event-state selection (forecast/past_days/archive/waiting per research D9), batched multi-coordinate request building per contracts/open-meteo.md, response slicing into WeatherPoint objects with provenance, model table (ECMWF/ICON) — verify live `models=` ids against the API while implementing
+- [X] T010 [P] Implement `assets/js/lib/format.js`: dash-for-null (FR-016), km/h + °C + mm formatting, wind-relative (head/tail/cross) from bearing vs direction, day-context hour labels (FR-023)
+- [X] T011 [P] Implement `assets/js/i18n.js`: dictionary fetch, `data-i18n` swap, `velometeo.lang` persistence, RO default (research D5)
+- [X] T012 [P] Create `assets/i18n/ro.json`, `assets/i18n/en.json`, `assets/i18n/ru.json` with all UI strings (tone: Delacau pages, non-technical)
+- [X] T013 [P] Unit tests `tests/geo.test.js` and `tests/gpx.test.js` against fixtures (distance sanity, waypoint presence/absence, malformed error)
+- [X] T014 [P] Unit tests `tests/scenarios.test.js` (band table rows, 207 km → 200 class, >15% deviation warning, pace durations, midnight-crossing hour derivation)
+- [X] T015 [P] Unit tests `tests/weather-api.test.js` (state selection boundary dates incl. today/2-days-past/8-days-past/20-days-future, request URL shape per contract, null slicing) and `tests/format.test.js` (dash rules, relative wind, day labels)
 
-**Checkpoint**: `node --test tests/` green — lib layer proven before any UI.
+**Checkpoint**: `npm test` green — lib layer proven before any UI.
 
 ## Phase 3: User Story 1 — upcoming event page (P1) 🎯 MVP
 

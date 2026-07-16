@@ -6,14 +6,13 @@
 
 - Any static file server (no build step exists):
   `python3 -m http.server 8000` from the repo root.
-- Node 20+ only for unit tests (`node --test tests/`), not for running the
-  site.
+- Node 20+ only for unit tests (`npm test`), not for running the site.
 - Network access to `api.open-meteo.com` / `archive-api.open-meteo.com`.
 
 ## Unit tests (pure logic)
 
 ```bash
-node --test tests/
+npm test  # node --test 'tests/*.test.js'
 ```
 
 Expected: all pass; covers GPX parsing/distances, brevet band table, pace

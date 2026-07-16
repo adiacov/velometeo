@@ -1,0 +1,53 @@
+{
+  "site.title": "velometeo",
+  "site.tagline": "Weather along your cycling route.",
+  "index.upcoming": "Upcoming events",
+  "index.past": "Past events",
+  "index.empty": "No events yet.",
+
+  "event.date": "Date",
+  "event.start": "Start",
+  "event.distance": "Distance",
+  "event.checkpoints": "Checkpoints",
+  "event.loading": "Loading...",
+
+  "scenario.fast": "Scenario: fast finish in {duration} ({from}–{to})",
+  "scenario.typical": "Scenario: typical finish in {duration} ({from}–{to})",
+  "scenario.max": "Scenario: official limit {duration} ({from}–{to})",
+  "scenario.pace": "Scenario: average speed {speed} km/h ({from}–{to})",
+  "scenario.rm.note": "The 90 h limit is for Randonneurs Mondiaux events (1200 km+), not BRM.",
+
+  "table.time": "Time",
+  "table.km": "Approx. km",
+  "table.weather": "Weather",
+  "table.temp": "Temperature",
+  "table.feels": "Feels like",
+  "table.precip": "Rain",
+  "table.precipProb": "Rain chance",
+  "table.wind": "Wind",
+  "table.gusts": "Gusts",
+  "table.windDir": "Wind direction",
+
+  "wind.head": "headwind",
+  "wind.tail": "tailwind",
+  "wind.cross": "crosswind",
+
+  "provenance.forecast": "Weather forecast",
+  "provenance.recorded": "Recorded weather (recent data)",
+  "provenance.observed": "Actual weather observed on event day",
+
+  "weather.waiting": "The forecast becomes available ~{days} days before the event.",
+  "weather.unavailable": "Weather data is temporarily unavailable. The route and scenarios are still shown — try again later.",
+
+  "model.title": "Weather source",
+
+  "map.view": "View on map",
+  "map.fit": "Whole route",
+
+  "notes.title": "Technical notes",
+  "notes.data": "Weather data comes from Open-Meteo (ECMWF and ICON models) and loads fresh every time the page opens. Missing values are shown as —, never invented.",
+
+  "error.unknownEvent": "This event does not exist. See the list on the main page.",
+  "error.badRoute": "The route for this event could not be read.",
+  "back.index": "All events"
+}

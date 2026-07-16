@@ -8,7 +8,7 @@ Free non-commercial tier, no API key, `access-control-allow-origin: *`.
 | Event state | Endpoint | Key params |
 |---|---|---|
 | Upcoming, within model horizon | `https://api.open-meteo.com/v1/forecast` | `forecast_days` as needed, `models=<apiModel>` |
-| Ended ≤ 7 days ago | same forecast endpoint | `past_days=<n>` (≤ 92) |
+| Ended ≤ 7 days ago | same forecast endpoint | `start_date`/`end_date` = event day(s) (past dates verified accepted live; equivalent to `past_days` ≤ 92 but slices cleaner) |
 | Ended > 7 days ago | `https://archive-api.open-meteo.com/v1/archive` | `start_date`/`end_date` = event day(s) |
 | Start beyond horizon | no weather call | waiting mode, message only |
 
