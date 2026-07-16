@@ -1,6 +1,7 @@
 // Full-screen map page (map.html?event=<id>&scenario=<kind>&back=...) —
 // the Delacau maps/* page rebuilt on runtime data: back link, scenario
-// cycler, key/all hours toggle, fit-route button.
+// cycler, key/all hours toggle. The map, route, and controls render
+// immediately; weather markers appear as soon as the fetch lands.
 import { loadEvent, loadWeather, enrichScenarios, persistedModel, scenarioShortLabel } from './event-data.js';
 import { initI18n, t } from './i18n.js';
 import { initMap, renderWeatherMarkers } from './map.js';
@@ -38,37 +39,44 @@ async function main() {
   document.title = `${data.entry.name} — velometeo`;
 
   const kinds = data.scenarios.map((s) => s.kind);
+  const byKind = new Map(data.scenarios.map((s) => [s.kind, s]));
   let scenarioKind = kinds.includes(params.get('scenario')) ? params.get('scenario') : kinds[Math.min(1, kinds.length - 1)];
   let mode = params.get('mode') === 'key' ? 'key' : 'all';
+  let rowsByKind = null; // filled when the weather fetch lands
 
+  // Map, route, and checkpoints appear before any weather round-trip.
   const mapHandle = initMap('route-map', data.route, data.route.waypoints);
-
-  const { locations } = await loadWeather(data, persistedModel().key);
-  const enriched = enrichScenarios(data.scenarios, data.entry.date, locations);
-  const byKind = new Map(enriched.map((s) => [s.kind, s]));
 
   const scenarioControl = document.querySelector('[data-scenario-control]');
   const modeControl = document.querySelector('[data-mode-control]');
 
-  function render() {
-    const scenario = byKind.get(scenarioKind);
-    scenarioControl.textContent = `${scenarioShortLabel(scenario)} ▾`;
+  function renderControls() {
+    scenarioControl.textContent = `${scenarioShortLabel(byKind.get(scenarioKind))} ▾`;
     modeControl.textContent = t(mode === 'key' ? 'map.keyHours' : 'map.allHours');
-    renderWeatherMarkers(mapHandle, scenario.rows, t, mode);
+  }
+
+  function renderMarkers() {
+    if (rowsByKind) renderWeatherMarkers(mapHandle, rowsByKind.get(scenarioKind).rows, t, mode);
   }
 
   scenarioControl.addEventListener('click', () => {
     scenarioKind = kinds[(kinds.indexOf(scenarioKind) + 1) % kinds.length];
     setParam('scenario', scenarioKind);
-    render();
+    renderControls();
+    renderMarkers();
   });
   modeControl.addEventListener('click', () => {
     mode = mode === 'key' ? 'all' : 'key';
     setParam('mode', mode);
-    render();
+    renderControls();
+    renderMarkers();
   });
 
-  render();
+  renderControls();
+
+  const { locations } = await loadWeather(data, persistedModel().key);
+  rowsByKind = new Map(enrichScenarios(data.scenarios, data.entry.date, locations).map((s) => [s.kind, s]));
+  renderMarkers();
 }
 
 main().catch((err) => {
