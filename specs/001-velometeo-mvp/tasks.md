@@ -68,7 +68,7 @@ is independently implementable and testable.
 **Goal**: `mode: "pace"` pages show 20/25/30 km/h scenarios.
 **Independent test**: quickstart walkthrough 5.
 
-- [ ] T026 [US4] Wire pace scenarios through `assets/js/event-page.js` rendering (scenario labels/i18n, exactly one mode per page — FR-009); add a temporary pace event and verify quickstart walkthrough 5
+- [X] T026 [US4] Wire pace scenarios through `assets/js/event-page.js` rendering (scenario labels/i18n, exactly one mode per page — FR-009); add a temporary pace event and verify quickstart walkthrough 5
 
 ## Phase 7: User Story 5 — model switcher, i18n, theme UX (P5)
 
