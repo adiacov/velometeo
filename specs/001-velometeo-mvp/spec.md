@@ -136,10 +136,11 @@ live forecast data for all scenario bands without any server component.
 2. **Given** the same page opened on a phone-sized screen, **When** the
    rider scrolls the table and map, **Then** all content is readable and
    usable without horizontal page scrolling.
-3. **Given** an event more than the forecast horizon (~16 days) in the
-   future, **When** a visitor opens the page, **Then** the page shows route,
-   map, date, and scenarios with a clear message that the forecast becomes
-   available N days before the event — never an error or invented data.
+3. **Given** an event further in the future than the selected model's
+   forecast horizon (~7–16 days depending on model), **When** a visitor
+   opens the page, **Then** the page shows route, map, date, and scenarios
+   with a clear message that the forecast becomes available N days before
+   the event — never an error or invented data.
 4. **Given** a weather provider returns no value for a field (e.g. gusts),
    **When** the table renders, **Then** the cell shows a dash (`—`).
 5. **Given** the weather service is unreachable, **When** the page loads,
@@ -189,7 +190,7 @@ page renders observed data with an "observed" label.
    **Then** weather comes from historical/observed data and the page clearly
    labels it as actual observed weather of the event day.
 2. **Given** an event that finished so recently that observed archive data
-   is not yet available (≤ ~5 days), **When** the page loads, **Then** the
+   is not yet available (≤ 7 days), **When** the page loads, **Then** the
    page still shows the event-day weather using recent-past data, without
    error, labeled appropriately.
 
@@ -380,8 +381,8 @@ following only the README; site works with their route.
   and MUST persist across pages and visits, like the theme choice.
 - **FR-013**: For past events, the system MUST show actual observed weather
   for event day, clearly labeled as observed (not forecast); while archive
-  data is not yet available (~5 days), it MUST fall back to recent-past data
-  without error.
+  data is not yet available (first 7 days after the event), it MUST fall
+  back to recent-past data without error.
 - **FR-014**: For events beyond the forecast horizon, the page MUST render
   route, map, date, and scenarios with a message stating when the forecast
   becomes available.
@@ -455,9 +456,11 @@ following only the README; site works with their route.
 - **SC-003**: Adding a route takes the curator under 5 minutes and touches
   exactly two things (GPX file + config entry); zero code edits, verified
   over the first three real route additions.
-- **SC-004**: The Delacau 200 event, recreated in velometeo, shows the same
-  scenario structure and equivalent weather data as the original page
-  (parity check by the curator).
+- **SC-004**: The Delacau 200 event, recreated in velometeo, matches the
+  original page's scenario structure, UX, and data labeling (parity check
+  by the curator; raw values are not comparable — the event has passed, so
+  velometeo shows observed data while the old page holds a frozen
+  forecast).
 - **SC-005**: Event pages remain correct after event day: 100% of past
   events display observed weather with an explicit "observed" label.
 - **SC-006**: A person outside the project can fork and launch their own
