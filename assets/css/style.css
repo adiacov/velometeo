@@ -186,3 +186,7 @@ td:first-child{font-weight:850;color:var(--text)}
 /* velometeo additions: weather model switcher (Delacau's source links,
    inline on the single event page). */
 .model-switcher{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+/* velometeo additions: "all events" home link, top-left in the topbar. */
+.home-link{margin-right:auto}
+.home-link a{white-space:nowrap}

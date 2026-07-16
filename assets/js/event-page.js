@@ -172,7 +172,6 @@ async function main() {
     });
 
     const enriched = enrichScenarios(data.scenarios, entry.date, weather.locations);
-    if (!enriched.some((s) => s.kind === openKind)) openKind = enriched[0].kind;
 
     const container = $('[data-scenarios]');
     container.innerHTML = enriched
@@ -189,7 +188,12 @@ async function main() {
     const details = [...container.querySelectorAll('.scenario')];
     details.forEach((el) => {
       el.addEventListener('toggle', () => {
-        if (!el.open) return;
+        if (!el.open) {
+          // Closing the tracked section means nothing stays open —
+          // re-renders (model/language switch) must not reopen it.
+          if (el.dataset.scenario === openKind) openKind = null;
+          return;
+        }
         openKind = el.dataset.scenario;
         details.forEach((other) => {
           if (other !== el) other.open = false;
