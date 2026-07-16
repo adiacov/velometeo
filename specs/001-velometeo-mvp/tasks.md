@@ -92,8 +92,8 @@ is independently implementable and testable.
 **Goal**: a stranger can fork → add route → enable Pages using README alone.
 **Independent test**: quickstart Deploy check + README dry run.
 
-- [ ] T032 [P] [US7] Write `README.md`: what the site is, fork steps, enable-Pages steps, add-a-route (script + manual with copy-paste manifest template), config reference (from contracts/routes-config.md), troubleshooting (CORS/horizon/fair-use), honest-data note
-- [ ] T033 [US7] Deploy to GitHub Pages on a test branch/fork and run the quickstart Deploy check at the `github.io` URL (SC-006 dry run)
+- [X] T032 [P] [US7] Write `README.md`: what the site is, fork steps, enable-Pages steps, add-a-route (script + manual with copy-paste manifest template), config reference (from contracts/routes-config.md), troubleshooting (CORS/horizon/fair-use), honest-data note
+- [X] T033 [US7] Deploy to GitHub Pages on a test branch/fork and run the quickstart Deploy check at the `github.io` URL (SC-006 dry run)
 
 ## Phase 10: Polish & cross-cutting
 
