@@ -4,20 +4,54 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>velometeo</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <link rel="stylesheet" href="assets/css/style.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body>
 <div class="page">
   <header class="hero">
     <div class="topbar">
       <div class="controls">
+        <nav class="lang">
+          <a href="#" data-lang="ro">RO</a>
+          <a href="#" data-lang="en">EN</a>
+          <a href="#" data-lang="ru">RU</a>
+        </nav>
         <button class="theme-toggle" type="button" data-theme-toggle>🌙</button>
       </div>
     </div>
     <h1 data-event-name>…</h1>
-    <!-- Placeholder: event page rendered by assets/js/event-page.js (tasks.md T017/T018) -->
+    <div class="meta">
+      <span class="pill"><span data-i18n="event.date">Data</span>: <b data-event-date>—</b></span>
+      <span class="pill"><span data-i18n="event.start">Start</span>: <b data-event-start>—</b></span>
+      <span class="pill"><span data-i18n="event.distance">Distanta</span>: <b data-event-distance>—</b></span>
+      <span class="pill" data-event-checkpoints><span data-i18n="event.checkpoints">Puncte de control</span>: <b>—</b></span>
+    </div>
+    <div class="update-info" data-event-status></div>
   </header>
+
+  <section class="section">
+    <div class="map-embed-wrap">
+      <div id="route-map" class="route-map route-map-embed"></div>
+      <button class="fit-button map-embed-fit" type="button" data-fit-route data-i18n="map.fit">Tot traseul</button>
+    </div>
+  </section>
+
+  <section class="section" data-scenarios>
+    <div class="note" data-i18n="event.loading">Se incarca...</div>
+  </section>
+
+  <section class="section sources">
+    <h2 data-i18n="notes.title">Note tehnice</h2>
+    <p data-i18n="notes.data"></p>
+  </section>
+
+  <footer class="project-footer">
+    <a href="index.html" data-i18n="back.index">Toate evenimentele</a>
+  </footer>
 </div>
 <script src="assets/js/theme.js" defer></script>
+<script type="module" src="assets/js/event-page.js"></script>
 </body>
 </html>

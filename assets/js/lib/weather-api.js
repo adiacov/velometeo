@@ -47,6 +47,12 @@ function addDays(yyyyMmDd, days) {
   return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
 }
 
+// Local ISO hour ("YYYY-MM-DDTHH:MM") of a scenario hour on event day —
+// the format Open-Meteo uses in hourly.time when a timezone is requested.
+export function localIsoHour(eventDate, { clockTime, dayOffset }) {
+  return `${addDays(eventDate, dayOffset)}T${clockTime}`;
+}
+
 // Current wall-clock date/time in an IANA timezone, without a tz database.
 export function nowInTimeZone(timeZone, date = new Date()) {
   const parts = new Intl.DateTimeFormat('en-CA', {

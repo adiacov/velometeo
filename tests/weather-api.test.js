@@ -10,6 +10,7 @@ import {
   weatherAt,
   provenanceOf,
   nowInTimeZone,
+  localIsoHour,
   HOURLY_FORECAST,
   HOURLY_ARCHIVE,
 } from '../assets/js/lib/weather-api.js';
@@ -125,6 +126,11 @@ test('provenance labels map from state (FR-013)', () => {
 test('model table: both launch models present, unknown key falls back to default', () => {
   assert.deepEqual(MODELS.map((m) => m.key), ['ecmwf', 'icon']);
   assert.equal(modelByKey('nope').key, 'ecmwf');
+});
+
+test('localIsoHour maps scenario hours to response time strings, across midnight', () => {
+  assert.equal(localIsoHour('2026-05-31', { clockTime: '06:00', dayOffset: 0 }), '2026-05-31T06:00');
+  assert.equal(localIsoHour('2026-05-31', { clockTime: '02:00', dayOffset: 1 }), '2026-06-01T02:00');
 });
 
 test('nowInTimeZone formats an injectable instant in the event timezone', () => {

@@ -38,11 +38,11 @@ is independently implementable and testable.
 **Goal**: `event.html?event=delacau-200-brm` renders live forecast table + map on a phone.
 **Independent test**: quickstart walkthroughs 2, 3, 8, 9.
 
-- [ ] T016 [P] [US1] Adapt Delacau `assets/map.js` into `assets/js/map.js`: Leaflet init (CDN+SRI pins), route polyline, hourly weather markers, wind arrows, checkpoint markers from waypoints — fed from runtime data structures instead of baked JSON
-- [ ] T017 [US1] Implement `assets/js/event-page.js`: read `?event=`, load manifest + GPX, run scenarios, fetch weather for persisted model, render scenario sections (collapsed `<details>` like Delacau) with hourly tables; unknown id / broken GPX → friendly i18n'd error (FR-005)
-- [ ] T018 [US1] Build `event.html`: mobile-first layout with header (name, date, start, measured length), map container, scenario sections, technical notes at bottom; wire `event-page.js`, `map.js`, `theme.js`, `i18n.js`
-- [ ] T019 [US1] Implement waiting mode (FR-014: "forecast opens N days before" from model horizon) and fetch-failure state (FR-017: route+map render, i18n'd message) in `assets/js/event-page.js`
-- [ ] T020 [US1] Verify quickstart walkthroughs 2, 3, 8, 9 on a phone-sized viewport (US1 acceptance scenarios 1–5) with a local static server
+- [X] T016 [P] [US1] Adapt Delacau `assets/map.js` into `assets/js/map.js`: Leaflet init (CDN+SRI pins), route polyline, hourly weather markers, wind arrows, checkpoint markers from waypoints — fed from runtime data structures instead of baked JSON
+- [X] T017 [US1] Implement `assets/js/event-page.js`: read `?event=`, load manifest + GPX, run scenarios, fetch weather for persisted model, render scenario sections (collapsed `<details>` like Delacau) with hourly tables; unknown id / broken GPX → friendly i18n'd error (FR-005)
+- [X] T018 [US1] Build `event.html`: mobile-first layout with header (name, date, start, measured length), map container, scenario sections, technical notes at bottom; wire `event-page.js`, `map.js`, `theme.js`, `i18n.js`
+- [X] T019 [US1] Implement waiting mode (FR-014: "forecast opens N days before" from model horizon) and fetch-failure state (FR-017: route+map render, i18n'd message) in `assets/js/event-page.js`
+- [X] T020 [US1] Verify quickstart walkthroughs 2, 3, 8, 9 on a phone-sized viewport (US1 acceptance scenarios 1–5) with a local static server
 
 **Checkpoint**: MVP — one route, live weather, mobile.
 
