@@ -22,9 +22,10 @@ None — awaiting owner decisions to close the milestone.
 
 - Add the next real routes (the 300+200 brevet) via `tools/add_route.py` —
   first real-world test of the two-file promise (SC-003).
-- Owner: decide the Delacau URL story (link/redirect from the old
-  `delacau-200-brm-weather-forecast` page) — deliberately out of MVP scope
-  (FR-028 kept the old page untouched).
+- Delacau URL story: DONE (2026-07-17) — the old
+  `delacau-200-brm-weather-forecast` repo is archived; all its pages
+  redirect to `event.html?event=delacau-200-brm` and its daily workflow
+  was removed.
 - Optional follow-ups recorded in `specs/001-velometeo-mvp/parity-check.md`:
   weather icon/label column (weather_code already fetched), GPX
   simplification option in `tools/add_route.py` (Pages serves .gpx
