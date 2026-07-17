@@ -20,16 +20,16 @@ exists (`assets/js/lib/`, `tests/`).
 **Purpose**: the shared code→condition mapping and its labels; every user
 story consumes these.
 
-- [ ] T001 Create pure mapping module `assets/js/lib/weather-icons.js`
+- [X] T001 Create pure mapping module `assets/js/lib/weather-icons.js`
       exporting `weatherCondition(code) → {icon, labelKey} | null` per
       contracts/weather-icons.md and research R1 (8 buckets, unknown → null,
       never throws, frozen lookup)
-- [ ] T002 [P] Create `tests/weather-icons.test.js` covering: every
+- [X] T002 [P] Create `tests/weather-icons.test.js` covering: every
       documented WMO code returns a bucket; representative bucket
       assignments; `null`/`undefined`/`-1`/`100`/`'0'` → null; every
       returnable labelKey exists in `assets/i18n/ro.json`, `en.json`,
       `ru.json`
-- [ ] T003 [P] Add the 8 `weather.*` label keys (clear, partlyCloudy,
+- [X] T003 [P] Add the 8 `weather.*` label keys (clear, partlyCloudy,
       overcast, fog, drizzle, rain, snow, thunderstorm) to
       `assets/i18n/ro.json`, `assets/i18n/en.json`, `assets/i18n/ru.json`
 
@@ -44,12 +44,12 @@ column between "Approx. km" and "Temperature".
 with translated hover label; unknown code shows `—`; no new horizontal
 scroll.
 
-- [ ] T004 [US1] In `assets/js/event-page.js` `tableHtml()`: insert a
+- [X] T004 [US1] In `assets/js/event-page.js` `tableHtml()`: insert a
       header cell after `table.km` — visually empty, `aria-label`/`title`
       from existing `table.weather` key — and a body cell rendering
       `weatherCondition(wp.weatherCode)` as the emoji with
       `title`/`aria-label` = `t(labelKey)` (escaped), or `DASH` when null
-- [ ] T005 [US1] In `assets/style.css` (only if needed after visual check):
+- [X] T005 [US1] In `assets/style.css` (only if needed after visual check):
       keep the icon column narrow/centered so the table gains no meaningful
       width in light and dark themes
 
@@ -62,7 +62,7 @@ scroll.
 **Independent Test**: narrow viewport; icons appear in card headers, layout
 otherwise unchanged; unknown code → no icon, no dash.
 
-- [ ] T006 [US2] In `assets/js/event-page.js` `cardsHtml()`: append the
+- [X] T006 [US2] In `assets/js/event-page.js` `cardsHtml()`: append the
       condition icon (with `title`/`aria-label` label) to the `.time`
       header line; append nothing when `weatherCondition` returns null
 
@@ -75,7 +75,7 @@ otherwise unchanged; unknown code → no icon, no dash.
 **Independent Test**: tap a weather marker; popup header shows the icon;
 marker visuals identical to before.
 
-- [ ] T007 [US3] In `assets/js/map.js` `popupHtml()`: import
+- [X] T007 [US3] In `assets/js/map.js` `popupHtml()`: import
       `weatherCondition` and append the icon (with `title` label) to the
       `<b>${timeLabel} · km N</b>` header line; append nothing when null;
       do not touch `markerIcon()`/divIcon rendering
@@ -84,10 +84,10 @@ marker visuals identical to before.
 
 ## Phase 6: Polish & cross-cutting
 
-- [ ] T008 Run full validation: `npm test` plus quickstart.md manual steps
+- [X] T008 Run full validation: `npm test` plus quickstart.md manual steps
       1–7 (three languages, both themes, mobile viewport, no-new-requests
       check)
-- [ ] T009 Update `STATE.md`: mark the weather-icon follow-up from
+- [X] T009 Update `STATE.md`: mark the weather-icon follow-up from
       `specs/001-velometeo-mvp/parity-check.md` as done; record feature 002
       status
 

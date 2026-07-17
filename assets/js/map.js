@@ -2,6 +2,7 @@
 // (route polyline, weather markers, wind arrows, popups) — fed from runtime
 // data instead of a baked window.*_MAP_DATA object.
 import { formatTemperature, formatWind, formatPrecipitation, degreesToCardinal, DASH } from './lib/format.js';
+import { weatherCondition } from './lib/weather-icons.js';
 
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>'"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]));
@@ -53,8 +54,10 @@ function popupHtml(row, t) {
   const windLine = dir === null || dir === undefined
     ? DASH
     : `<span class="popup-wind-arrow">${windArrow(dir)}</span> ${degreesToCardinal(dir)}, ${formatWind(wp.windSpeed)} / ${formatWind(wp.windGusts)}`;
+  const cond = weatherCondition(wp.weatherCode);
+  const condIcon = cond ? ` <span title="${escapeHtml(t(cond.labelKey))}">${cond.icon}</span>` : '';
   return `<div class="weather-popup">
-    <b>${escapeHtml(row.timeLabel)} · km ${Math.round(row.km)}</b><br>
+    <b>${escapeHtml(row.timeLabel)} · km ${Math.round(row.km)}</b>${condIcon}<br>
     ${t('table.temp')}: <b>${formatTemperature(wp.temperature)}</b> (${t('table.feels')}: ${formatTemperature(wp.apparent)})<br>
     ${t('table.precip')}: <b>${formatPrecipitation(wp.precipitation)}</b><br>
     ${t('table.wind')}: <b>${windLine}</b>

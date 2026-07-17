@@ -16,20 +16,27 @@ cache revalidation).
 
 ## Active work
 
-None — awaiting owner decisions to close the milestone.
+Feature 002 (weather condition icons) implemented on branch
+`002-weather-icons` (2026-07-17, full spec-kit cycle: spec → plan → tasks →
+analyze → implement, all 9 tasks [X], 57 tests green). Emoji condition icon
+from `weather_code` in three surfaces: table (narrow icon-only column),
+mobile card header, map popup header; shared mapping in
+`assets/js/lib/weather-icons.js`; labels in ro/en/ru. Awaiting owner review
+and merge to `main`.
 
 ## Next action
 
+- Owner: review branch `002-weather-icons`, merge to `main` to deploy.
 - Add the next real routes (the 300+200 brevet) via `tools/add_route.py` —
   first real-world test of the two-file promise (SC-003).
 - Delacau URL story: DONE (2026-07-17) — the old
   `delacau-200-brm-weather-forecast` repo is archived; all its pages
   redirect to `event.html?event=delacau-200-brm` and its daily workflow
   was removed.
-- Optional follow-ups recorded in `specs/001-velometeo-mvp/parity-check.md`:
-  weather icon/label column (weather_code already fetched), GPX
-  simplification option in `tools/add_route.py` (Pages serves .gpx
-  uncompressed, 288 KB for Delacau).
+- Remaining optional follow-up from `specs/001-velometeo-mvp/parity-check.md`:
+  GPX simplification option in `tools/add_route.py` (Pages serves .gpx
+  uncompressed, 288 KB for Delacau). The weather icon/label follow-up is
+  DONE (feature 002).
 
 ## Blockers
 
@@ -40,6 +47,8 @@ None — awaiting owner decisions to close the milestone.
 Read these only when they are relevant to the current task or explicitly requested.
 Keep this list limited to active work. Remove completed-work pointers when work is closed.
 
+- `specs/002-weather-icons/` — spec, plan, research, contract, tasks
+  (all [X]) for the condition-icon feature.
 - `specs/001-velometeo-mvp/` — spec, plan, research (D1–D12), contracts,
   tasks (all [X]), parity-check.md (T034/T035 report).
 - `README.md` — forker-facing docs (fork → add route → enable Pages).

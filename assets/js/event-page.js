@@ -25,6 +25,7 @@ import {
   degreesToCardinal,
   windRelative,
 } from './lib/format.js';
+import { weatherCondition } from './lib/weather-icons.js';
 import { initI18n, t, onLangChange } from './i18n.js';
 
 const $ = (sel) => document.querySelector(sel);
@@ -50,16 +51,31 @@ function windCellHtml(row) {
   return `<span class="wind-dir">${escapeHtml(degreesToCardinal(wp.windDirection))}${escapeHtml(relText)}</span>`;
 }
 
+// Condition icon with the translated label on hover/assistive tech only
+// (FR-004); '' when the weather code is unknown — callers decide between
+// a dash (table cell) and omission (header lines).
+function conditionIconHtml(row) {
+  const cond = weatherCondition(row.weather?.weatherCode);
+  if (!cond) return '';
+  const label = escapeHtml(t(cond.labelKey));
+  return `<span role="img" title="${label}" aria-label="${label}">${cond.icon}</span>`;
+}
+
 function tableHtml(rows) {
-  const head = ['table.time', 'table.km', 'table.temp', 'table.feels', 'table.precip', 'table.precipProb', 'table.wind', 'table.gusts', 'table.windDir']
-    .map((k) => `<th>${escapeHtml(t(k))}</th>`)
-    .join('');
+  // The condition column header is icon-width and visually empty; its
+  // meaning lives in the accessible name (research R3).
+  const condHead = `<th class="cond" aria-label="${escapeHtml(t('table.weather'))}" title="${escapeHtml(t('table.weather'))}"></th>`;
+  const headCells = ['table.time', 'table.km', 'table.temp', 'table.feels', 'table.precip', 'table.precipProb', 'table.wind', 'table.gusts', 'table.windDir']
+    .map((k) => `<th>${escapeHtml(t(k))}</th>`);
+  headCells.splice(2, 0, condHead);
+  const head = headCells.join('');
   const body = rows
     .map((row) => {
       const wp = row.weather || {};
       return `<tr>
         <td>${escapeHtml(row.timeLabel)}</td>
         <td>${Math.round(row.km)}</td>
+        <td class="cond">${conditionIconHtml(row) || DASH}</td>
         <td>${escapeHtml(formatTemperature(wp.temperature))}</td>
         <td>${escapeHtml(formatTemperature(wp.apparent))}</td>
         <td>${escapeHtml(formatPrecipitation(wp.precipitation))}</td>
@@ -77,8 +93,9 @@ function cardsHtml(rows) {
   return `<div class="cards-mobile">${rows
     .map((row) => {
       const wp = row.weather || {};
+      const icon = conditionIconHtml(row);
       return `<div class="hour-card">
-        <div class="time">${escapeHtml(row.timeLabel)} · km ${Math.round(row.km)}</div>
+        <div class="time">${escapeHtml(row.timeLabel)} · km ${Math.round(row.km)}${icon ? ` ${icon}` : ''}</div>
         <div class="grid">
           <div>${escapeHtml(t('table.temp'))} <b>${escapeHtml(formatTemperature(wp.temperature))}</b></div>
           <div>${escapeHtml(t('table.feels'))} <b>${escapeHtml(formatTemperature(wp.apparent))}</b></div>
