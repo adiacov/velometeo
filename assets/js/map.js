@@ -39,9 +39,10 @@ function markerIcon(row, compact) {
   const cls = isCaution(wp) ? 'warn' : 'ok';
   const temp = wp && wp.temperature !== null ? `${Math.round(wp.temperature)}°` : DASH;
   const arrow = windArrow(wp ? wp.windDirection : null);
+  const cond = weatherCondition(wp ? wp.weatherCode : null);
   return L.divIcon({
     className: `weather-marker ${cls} ${compact ? 'compact' : ''}`,
-    html: `<div class="wm"><span>${escapeHtml(row.timeLabel)}</span><strong>${temp} <em>${arrow}</em></strong></div>`,
+    html: `<div class="wm"><span>${escapeHtml(row.timeLabel)}${cond ? ` <em class="cond">${cond.icon}</em>` : ''}</span><strong>${temp} <em>${arrow}</em></strong></div>`,
     iconSize: compact ? [54, 42] : [62, 48],
     iconAnchor: compact ? [27, 42] : [31, 48],
     popupAnchor: [0, -46],
