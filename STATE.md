@@ -16,17 +16,18 @@ cache revalidation).
 
 ## Active work
 
-Feature 002 (weather condition icons) implemented on branch
-`002-weather-icons` (2026-07-17, full spec-kit cycle: spec → plan → tasks →
-analyze → implement, all 9 tasks [X], 57 tests green). Emoji condition icon
-from `weather_code` in three surfaces: table (narrow icon-only column),
-mobile card header, map popup header; shared mapping in
-`assets/js/lib/weather-icons.js`; labels in ro/en/ru. Awaiting owner review
-and merge to `main`.
+None. Feature 002 (weather condition icons) is DONE and merged to `main`
+(fast-forward, 2026-07-17; full spec-kit cycle, all 9 tasks [X], 57 tests
+green). Emoji condition icon from `weather_code` in four surfaces: table
+(narrow icon-only column), mobile card header, map popup header, and — as
+a separate revertable commit `fde0802` — the map markers themselves (2x2:
+time+icon / temp+arrow). Shared mapping in `assets/js/lib/weather-icons.js`;
+labels in ro/en/ru.
 
 ## Next action
 
-- Owner: review branch `002-weather-icons`, merge to `main` to deploy.
+- Watch the live site after deploy; if the marker icons feel crowded on a
+  real phone, `git revert fde0802`.
 - Add the next real routes (the 300+200 brevet) via `tools/add_route.py` —
   first real-world test of the two-file promise (SC-003).
 - Delacau URL story: DONE (2026-07-17) — the old
