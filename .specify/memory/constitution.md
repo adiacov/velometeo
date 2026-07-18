@@ -1,8 +1,14 @@
 <!--
 Sync Impact Report
-- Version change: (template) → 1.0.0 (initial ratification)
-- Modified principles: all placeholders replaced (initial adoption)
-- Added sections: Core Principles (7), Additional Constraints, Development Workflow, Governance
+- Version change: 1.0.0 → 1.1.0 (MINOR: materially changed guidance, no
+  principle removed or redefined)
+- Modified principles: V. Honest Data (trimmed the observed-data labeling
+  clause — no observed data exists in the product anymore; the general
+  never-mislabel rule stays)
+- Modified sections: Additional Constraints — past-events archive/observed
+  rule replaced by the target-date forecast rule (feature
+  005-single-provider-forecast, owner decision 2026-07-18)
+- Added sections: none
 - Removed sections: none
 - Templates requiring updates:
   - ✅ .specify/templates/plan-template.md (Constitution Check gate compatible; no edits needed)
@@ -60,9 +66,9 @@ break the fork workflow are breaking changes.
 ### V. Honest Data
 
 If a provider lacks a value (e.g. wind gusts), the UI MUST show a dash (`—`),
-never an invented, interpolated-as-real, or silently substituted number.
-Observed (archive) data MUST be clearly labeled as observed, never presented
-as a forecast, and vice versa.
+never an invented, interpolated-as-real, or silently substituted number. The
+displayed weather MUST always be clearly attributed to the date it is for,
+so a forecast is never mistaken for a different day's conditions.
 
 *Rationale: riders make safety-relevant decisions (clothing, wind exposure)
 from these pages; inherited as a hard rule from the Delacau project.*
@@ -99,9 +105,12 @@ architecture.*
 - One config = one route = one page; a multi-route brevet is multiple
   configs. The index page lists all events, split Upcoming/Past, newest
   first within each group.
-- Past events (event date passed) MUST switch to Open-Meteo's archive API
-  and show actual observed weather, clearly labeled; pages become a
-  permanent record instead of degrading.
+- The weather forecast MUST target a single date per page: the event day
+  for events today or in the future, or the page-load date when the event
+  date has passed. Past events show the current forecast for riding the
+  route now, not a historical record; the status line MUST state the
+  provider and the exact date the forecast is for, so the reason (prepare
+  for the event vs. ride it now) is clear.
 - No accounts, tracking, live GPS following, or route planning/editing.
 - The live Delacau page stays untouched until velometeo is ready to
   supersede it.
@@ -131,4 +140,4 @@ and docs. Every plan MUST pass the Constitution Check gate against these
 principles; violations must be justified in the plan's Complexity Tracking
 section or the design changed.
 
-**Version**: 1.0.0 | **Ratified**: 2026-07-16 | **Last Amended**: 2026-07-16
+**Version**: 1.1.0 | **Ratified**: 2026-07-16 | **Last Amended**: 2026-07-18

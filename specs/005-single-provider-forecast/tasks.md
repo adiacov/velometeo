@@ -14,7 +14,7 @@
 
 **Purpose**: resolve the Constitution Check violation before any behavior change.
 
-- [ ] T001 Amend `.specify/memory/constitution.md` to v1.1.0 (owner-approved 2026-07-18): replace the Additional Constraints bullet "Past events … MUST switch to Open-Meteo's archive API … permanent record" with the target-date rule (past events show the forecast for the page-load date, clearly dated in the status line); trim Principle V's observed-data labeling sentence (observed data no longer exists; the never-mislabel rule stays); update the Sync Impact Report comment and version/amended dates.
+- [x] T001 Amend `.specify/memory/constitution.md` to v1.1.0 (owner-approved 2026-07-18): replace the Additional Constraints bullet "Past events … MUST switch to Open-Meteo's archive API … permanent record" with the target-date rule (past events show the forecast for the page-load date, clearly dated in the status line); trim Principle V's observed-data labeling sentence (observed data no longer exists; the never-mislabel rule stays); update the Sync Impact Report comment and version/amended dates.
 
 **Checkpoint**: constitution gate passes; no code changed.
 
