@@ -2,6 +2,24 @@
    specification (constitution VI). Kept whole: scenario, table, mobile-card,
    map, pill and switcher rules are all reused by velometeo pages. */
 *{box-sizing:border-box}
+
+/* Self-hosted e-reader typography (003 R5, FR-010): Literata (OFL) for
+   headings — a serif designed for e-ink — and Inter (OFL) for body/data.
+   woff2 subsets (latin, latin-ext for RO diacritics, cyrillic for RU) with
+   font-display:swap so text is never invisible; no third-party requests.
+   Licenses: assets/fonts/OFL-Inter.txt, OFL-Literata.txt. */
+@font-face{font-family:Inter;font-style:normal;font-weight:400;font-display:swap;src:url("../fonts/inter-latin-400.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:Inter;font-style:normal;font-weight:400;font-display:swap;src:url("../fonts/inter-latin-ext-400.woff2") format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:Inter;font-style:normal;font-weight:400;font-display:swap;src:url("../fonts/inter-cyrillic-400.woff2") format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:Inter;font-style:normal;font-weight:700;font-display:swap;src:url("../fonts/inter-latin-700.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:Inter;font-style:normal;font-weight:700;font-display:swap;src:url("../fonts/inter-latin-ext-700.woff2") format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:Inter;font-style:normal;font-weight:700;font-display:swap;src:url("../fonts/inter-cyrillic-700.woff2") format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:Literata;font-style:normal;font-weight:600;font-display:swap;src:url("../fonts/literata-latin-600.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:Literata;font-style:normal;font-weight:600;font-display:swap;src:url("../fonts/literata-latin-ext-600.woff2") format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:Literata;font-style:normal;font-weight:600;font-display:swap;src:url("../fonts/literata-cyrillic-600.woff2") format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:Literata;font-style:normal;font-weight:700;font-display:swap;src:url("../fonts/literata-latin-700.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:Literata;font-style:normal;font-weight:700;font-display:swap;src:url("../fonts/literata-latin-ext-700.woff2") format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:Literata;font-style:normal;font-weight:700;font-display:swap;src:url("../fonts/literata-cyrillic-700.woff2") format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
 :root{
   color-scheme:light;
   --paper:#ffffff;
@@ -90,6 +108,9 @@
   --soft-shadow:none;
 }
 html{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;scroll-behavior:smooth}
+/* Book-like serif for headings (003 US4); relax the sans-tuned tracking. */
+h1,h2,h3,.subtitle{font-family:Literata,Georgia,"Times New Roman",serif}
+h1,h2,h3{letter-spacing:-.015em}
 body{margin:0;background:var(--bg);color:var(--text);line-height:1.55;font-size:16px}
 :focus-visible{outline:2px solid var(--text);outline-offset:2px}
 .page{width:min(1120px,100%);margin:0 auto;padding:28px 20px 34px}
@@ -180,6 +201,19 @@ td:first-child{font-weight:850;color:var(--text)}
 :root[data-theme="dark"] .fit-button{background:var(--accent);color:var(--paper)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .fit-button{background:var(--accent);color:var(--paper)}}
 .route-map{min-height:0;border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);background:var(--surface)}
+/* Monochrome map (003 US4 / R4): grayscale "printed map" tiles, inverted in
+   dark; ink route line + checkpoints; paper/ink popups, controls, attribution. */
+.leaflet-tile-pane{filter:grayscale(1) contrast(1.05)}
+:root[data-theme="dark"] .leaflet-tile-pane{filter:grayscale(1) invert(1) brightness(.9) contrast(1.05)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .leaflet-tile-pane{filter:grayscale(1) invert(1) brightness(.9) contrast(1.05)}}
+.leaflet-overlay-pane .route-line{stroke:var(--text)}
+.leaflet-overlay-pane .route-checkpoint{stroke:var(--text);fill:var(--surface)}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--surface);color:var(--text)}
+.leaflet-popup-close-button{color:var(--muted)!important}
+.leaflet-container a{color:var(--text)}
+.leaflet-bar a,.leaflet-bar a:hover{background:var(--surface);color:var(--text);border-color:var(--border)}
+.leaflet-control-attribution{background:var(--surface)!important;color:var(--muted)}
+.leaflet-control-attribution a{color:var(--muted)}
 .weather-marker{width:62px!important;height:48px!important;border-radius:12px;border:2px solid var(--paper);box-shadow:0 6px 14px rgba(0,0,0,.22);font-family:inherit;line-height:1;overflow:hidden;opacity:.95}.weather-marker .wm{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center;white-space:nowrap}.weather-marker span{display:block;font-size:12px;font-weight:950}.weather-marker strong{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:950}.weather-marker em{font-style:normal;font-size:16px;line-height:.9}.weather-marker em.cond{font-size:11px}.weather-marker.compact em.cond{font-size:10px}.weather-marker.ok{background:var(--ok-bg);color:var(--ok-text)}.weather-marker.warn{background:var(--warn-bg);color:var(--warn-text)}.weather-marker.compact{width:54px!important;height:42px!important;border-radius:11px}.weather-marker.compact span{font-size:10px}.weather-marker.compact strong{font-size:11px}.weather-marker.compact em{font-size:14px}.weather-popup{font-size:14px;line-height:1.5;min-width:190px}.popup-wind-arrow{display:inline-block;min-width:18px;text-align:center;font-size:17px;line-height:1}.leaflet-popup-content{margin:12px 14px}.leaflet-popup-tip-container{display:none}.leaflet-popup-content-wrapper{border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.22)}.leaflet-control-attribution{font-size:10px}
 @media (max-width:760px){.map-page{padding:6px;gap:6px}.compact-map-header{grid-template-columns:1fr 1fr;gap:7px}.map-header{border-radius:16px;padding:7px}.map-control-button{min-height:40px;font-size:13px;padding:8px}.route-map{border-radius:17px}.leaflet-popup-content{margin:10px 12px}.weather-popup{font-size:13px;min-width:170px}}
 

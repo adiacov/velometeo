@@ -69,12 +69,17 @@ function popupHtml(row, t) {
 // Returns a handle used by renderWeatherMarkers.
 export function initMap(containerId, route, waypoints) {
   const map = L.map(containerId, { scrollWheelZoom: false, tap: true });
+  // Drop Leaflet's default prefix (it embeds a colored flag emoji) — keep the
+  // page strictly monochrome (003).
+  map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(map);
 
-  const routeLine = L.polyline(route.points, { color: '#0f766e', weight: 5, opacity: 0.9 }).addTo(map);
+  // Colors are monochrome fallbacks; the actual per-theme ink/paper comes
+  // from CSS (.route-line / .route-checkpoint) so map.js stays theme-unaware.
+  const routeLine = L.polyline(route.points, { color: '#111', weight: 5, opacity: 0.9, className: 'route-line' }).addTo(map);
   const bounds = routeLine.getBounds();
   if (bounds.isValid()) map.fitBounds(bounds, { padding: [40, 40] });
 
@@ -82,10 +87,11 @@ export function initMap(containerId, route, waypoints) {
   (waypoints || []).forEach((point) => {
     const marker = L.circleMarker([point.lat, point.lon], {
       radius: 8,
-      color: '#2563eb',
-      fillColor: '#93c5fd',
+      color: '#111',
+      fillColor: '#fff',
       fillOpacity: 0.95,
       weight: 2,
+      className: 'route-checkpoint',
     });
     if (point.name) marker.bindPopup(`<b>${escapeHtml(point.name)}</b>`);
     marker.addTo(checkpointLayer);
