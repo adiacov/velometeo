@@ -1,8 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  MODELS,
-  modelByKey,
+  MODEL,
   forecastTarget,
   selectEventState,
   daysUntilForecast,
@@ -62,7 +61,7 @@ const positions = [
 ];
 
 test('forecast URL: batched coordinates, model id, forecast variable set, anchored at target date', () => {
-  const url = new URL(buildWeatherUrl({ positions, event, targetDate: '2026-07-20', modelKey: 'ecmwf', timezone: 'Europe/Chisinau' }));
+  const url = new URL(buildWeatherUrl({ positions, event, targetDate: '2026-07-20', timezone: 'Europe/Chisinau' }));
   assert.equal(url.host, 'api.open-meteo.com');
   assert.equal(url.searchParams.get('latitude'), '47.0493,47.2566');
   assert.equal(url.searchParams.get('longitude'), '28.8632,28.8020');
@@ -76,14 +75,14 @@ test('forecast URL: batched coordinates, model id, forecast variable set, anchor
 });
 
 test('past event: fetch window anchored at today, not the original event date', () => {
-  const url = new URL(buildWeatherUrl({ positions, event, targetDate: '2026-09-01', modelKey: 'ecmwf', timezone: 'Europe/Chisinau' }));
+  const url = new URL(buildWeatherUrl({ positions, event, targetDate: '2026-09-01', timezone: 'Europe/Chisinau' }));
   assert.equal(url.searchParams.get('start_date'), '2026-09-01');
   assert.equal(url.searchParams.get('end_date'), '2026-09-02');
 });
 
 test('multi-day event extends end_date past midnight, anchored at target date', () => {
   const long = { date: '2026-07-20', start: '20:00', maxDurationHours: 20 };
-  const url = new URL(buildWeatherUrl({ positions, event: long, targetDate: '2026-07-20', modelKey: 'ecmwf', timezone: 'Europe/Chisinau' }));
+  const url = new URL(buildWeatherUrl({ positions, event: long, targetDate: '2026-07-20', timezone: 'Europe/Chisinau' }));
   assert.equal(url.searchParams.get('end_date'), '2026-07-22'); // ends 16:00 two days on
 });
 
@@ -119,9 +118,10 @@ test('provenance: forecast is the only reachable label', () => {
   assert.equal(provenanceOf('waiting'), null);
 });
 
-test('model table: both launch models present, unknown key falls back to default', () => {
-  assert.deepEqual(MODELS.map((m) => m.key), ['ecmwf', 'icon']);
-  assert.equal(modelByKey('nope').key, 'ecmwf');
+test('single model: ECMWF, 15-day horizon (owner decision 2026-07-18)', () => {
+  assert.equal(MODEL.label, 'ECMWF');
+  assert.equal(MODEL.apiModel, 'ecmwf_ifs025');
+  assert.equal(MODEL.horizonDays, 15);
 });
 
 test('localIsoHour maps scenario hours to response time strings, across midnight', () => {

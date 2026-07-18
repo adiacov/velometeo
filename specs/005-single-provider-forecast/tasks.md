@@ -41,11 +41,11 @@
 
 **Independent Test**: quickstart §3 — no `[data-model]` elements on event/map pages; stale `localStorage['velometeo.model']` is inert; weather loads normally.
 
-- [ ] T006 [US2] Collapse to a single model in `assets/js/lib/weather-api.js`: replace `MODELS`/`modelByKey`/`DEFAULT_MODEL_KEY` with one exported `MODEL = { label: 'ECMWF', apiModel: 'ecmwf_ifs025', horizonDays: 15 }`; update all importers.
-- [ ] T007 [US2] Remove preference plumbing in `assets/js/event-data.js`: delete `persistedModel`, `MODEL_STORAGE_KEY`; `loadWeather(data)` loses the modelKey parameter (never read/write localStorage — FR-008).
-- [ ] T008 [US2] Remove the switcher from the event page: in `assets/js/event-page.js` delete `switcherHtml`, `switchModel`, `weatherByModel`, `fetchSeq`, the `[data-model]` click wiring and the switcher render; in `event.html` remove the `[data-model-switcher]` container; keep the existing status pill (forecast · ECMWF) as-is until US3.
-- [ ] T009 [US2] Update `assets/js/map-page.js`: call `loadWeather(data)` without the persisted model; remove the `persistedModel` import.
-- [ ] T010 [US2] Verify per quickstart §3 (harness: zero `[data-model]` nodes on both pages; set stale localStorage key → no error, no remnant) and `npm test` green; `node --check` on edited modules. Commit the story.
+- [x] T006 [US2] Collapse to a single model in `assets/js/lib/weather-api.js`: replace `MODELS`/`modelByKey`/`DEFAULT_MODEL_KEY` with one exported `MODEL = { label: 'ECMWF', apiModel: 'ecmwf_ifs025', horizonDays: 15 }`; update all importers.
+- [x] T007 [US2] Remove preference plumbing in `assets/js/event-data.js`: delete `persistedModel`, `MODEL_STORAGE_KEY`; `loadWeather(data)` loses the modelKey parameter (never read/write localStorage — FR-008).
+- [x] T008 [US2] Remove the switcher from the event page: in `assets/js/event-page.js` delete `switcherHtml`, `switchModel`, `weatherByModel`, `fetchSeq`, the `[data-model]` click wiring and the switcher render; in `event.html` remove the `[data-model-switcher]` container; keep the existing status pill (forecast · ECMWF) as-is until US3.
+- [x] T009 [US2] Update `assets/js/map-page.js`: call `loadWeather(data)` without the persisted model; remove the `persistedModel` import.
+- [x] T010 [US2] Verify per quickstart §3 (harness: zero `[data-model]` nodes on both pages; set stale localStorage key → no error, no remnant) and `npm test` green; `node --check` on edited modules. Commit the story.
 
 **Checkpoint**: single-provider site, still labeled by the old pill.
 

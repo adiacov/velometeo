@@ -3,7 +3,7 @@
 import { parseGpx } from './lib/gpx.js';
 import { brevetScenarios, paceScenarios, classifyBrevet, scenarioHours } from './lib/scenarios.js';
 import {
-  modelByKey,
+  MODEL,
   selectEventState,
   forecastTarget,
   buildWeatherUrl,
@@ -15,7 +15,6 @@ import {
 import { formatHour } from './lib/format.js';
 
 export const DEFAULT_TIMEZONE = 'Europe/Chisinau';
-export const MODEL_STORAGE_KEY = 'velometeo.model';
 
 export class EventDataError extends Error {
   constructor(key) {
@@ -89,29 +88,24 @@ export async function loadEvent(id) {
   };
 }
 
-export function persistedModel() {
-  return modelByKey(localStorage.getItem(MODEL_STORAGE_KEY));
-}
-
-// Fetch weather for one model. Never throws: waiting yields no locations,
-// failure sets fetchFailed (FR-017 — the page still renders). `target` is
-// the forecast target date/kind (event day if upcoming, today if past).
-export async function loadWeather({ eventTimes, positions, timezone }, modelKey) {
-  const model = modelByKey(modelKey);
+// Fetch the forecast. Never throws: waiting yields no locations, failure
+// sets fetchFailed (FR-017 — the page still renders). `target` is the
+// forecast target date/kind (event day if upcoming, today if past).
+export async function loadWeather({ eventTimes, positions, timezone }) {
   const now = nowInTimeZone(timezone);
-  const state = selectEventState(eventTimes, now, model.horizonDays);
+  const state = selectEventState(eventTimes, now, MODEL.horizonDays);
   const target = forecastTarget(eventTimes, now);
   if (state === 'waiting') {
-    return { model, now, state, target, locations: null, fetchFailed: false };
+    return { now, state, target, locations: null, fetchFailed: false };
   }
   try {
-    const url = buildWeatherUrl({ positions, event: eventTimes, targetDate: target.targetDate, modelKey: model.key, timezone });
+    const url = buildWeatherUrl({ positions, event: eventTimes, targetDate: target.targetDate, timezone });
     const res = await fetch(url);
     if (!res.ok) throw new Error(String(res.status));
-    return { model, now, state, target, locations: normalizeLocations(await res.json()), fetchFailed: false };
+    return { now, state, target, locations: normalizeLocations(await res.json()), fetchFailed: false };
   } catch (err) {
     console.warn('velometeo: weather fetch failed', err);
-    return { model, now, state, target, locations: null, fetchFailed: true };
+    return { now, state, target, locations: null, fetchFailed: true };
   }
 }
 

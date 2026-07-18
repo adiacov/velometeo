@@ -2,7 +2,7 @@
 // the Delacau maps/* page rebuilt on runtime data: back link, scenario
 // cycler, key/all hours toggle. The map, route, and controls render
 // immediately; weather markers appear as soon as the fetch lands.
-import { loadEvent, loadWeather, enrichScenarios, persistedModel, scenarioShortLabel } from './event-data.js';
+import { loadEvent, loadWeather, enrichScenarios, scenarioShortLabel } from './event-data.js';
 import { initI18n, t } from './i18n.js';
 import { initMap, renderWeatherMarkers } from './map.js';
 
@@ -74,7 +74,7 @@ async function main() {
 
   renderControls();
 
-  const { target, locations } = await loadWeather(data, persistedModel().key);
+  const { target, locations } = await loadWeather(data);
   rowsByKind = new Map(enrichScenarios(data.scenarios, target.targetDate, locations).map((s) => [s.kind, s]));
   renderMarkers();
 }

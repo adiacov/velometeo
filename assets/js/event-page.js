@@ -2,17 +2,9 @@
 // weather tables; each scenario header links to the full-screen map page
 // (Delacau UX). Broken input degrades to a friendly message (FR-005);
 // weather failure keeps the page structure (FR-017). Rendering is
-// repeatable: language switch re-renders, model switch refetches then
-// re-renders (clarification Q3).
-import {
-  loadEvent,
-  loadWeather,
-  enrichScenarios,
-  persistedModel,
-  MODEL_STORAGE_KEY,
-  EventDataError,
-} from './event-data.js';
-import { MODELS, modelByKey, daysUntilForecast, provenanceOf, nowInTimeZone } from './lib/weather-api.js';
+// repeatable: language switch re-renders (no refetch).
+import { loadEvent, loadWeather, enrichScenarios, EventDataError } from './event-data.js';
+import { MODEL, daysUntilForecast, provenanceOf, nowInTimeZone } from './lib/weather-api.js';
 import {
   DASH,
   formatTemperature,
@@ -147,61 +139,28 @@ async function main() {
     cpPill.remove(); // checkpoints are optional (FR-003)
   }
 
-  // Mutable view state: model choice, fetch outcome, open scenario.
+  // Mutable view state: fetch outcome, open scenario.
   // All sections start closed; openKind only tracks the visitor's choice.
-  let modelKey = persistedModel().key;
   let weather = null;
   let openKind = null;
-  const weatherByModel = new Map(); // page-lifetime cache: switching back is instant
-  let fetchSeq = 0; // guards against a slow fetch overwriting a newer model choice
-
-  // Switch models with instant visual feedback: the active button and the
-  // status pill re-render immediately (tables briefly keep the previous
-  // model's rows), then the fetch fills in the new data.
-  async function switchModel(key) {
-    modelKey = key;
-    localStorage.setItem(MODEL_STORAGE_KEY, modelKey);
-    renderAll();
-    const seq = ++fetchSeq;
-    const next = weatherByModel.get(key) || await loadWeather(data, key); // lazy: selected model only
-    weatherByModel.set(key, next);
-    if (seq !== fetchSeq) return; // a newer switch already took over
-    weather = next;
-    renderAll();
-  }
 
   function mapPageUrl(kind) {
     const q = new URLSearchParams({ event: entry.id, scenario: kind, back: `event.html?event=${entry.id}` });
     return `map.html?${q}`;
   }
 
-  function switcherHtml(model) {
-    const links = MODELS.map((m) => `<a href="#" data-model="${escapeHtml(m.key)}" class="${m.key === model.key ? 'active' : ''}">${escapeHtml(m.label)}</a>`).join('');
-    return `<div class="model-switcher"><span class="pill"><b>${escapeHtml(t('model.title'))}</b></span><div class="source-links">${links}</div></div>`;
-  }
-
-  function statusHtml(model) {
+  function statusHtml() {
     if (weather.state === 'waiting') {
-      const days = Math.ceil(daysUntilForecast(data.eventTimes, nowInTimeZone(data.timezone), model.horizonDays));
+      const days = Math.ceil(daysUntilForecast(data.eventTimes, nowInTimeZone(data.timezone), MODEL.horizonDays));
       return `<div class="note">${escapeHtml(t('weather.waiting', { days }))}</div>`;
     }
     const provenance = provenanceOf(weather.state);
-    const pill = `<span class="pill"><b>${escapeHtml(t(`provenance.${provenance}`))}</b> · ${escapeHtml(model.label)}</span>`;
+    const pill = `<span class="pill"><b>${escapeHtml(t(`provenance.${provenance}`))}</b> · ${escapeHtml(MODEL.label)}</span>`;
     return weather.fetchFailed ? `${pill}<div class="note">${escapeHtml(t('weather.unavailable'))}</div>` : pill;
   }
 
   function renderAll() {
-    const model = modelByKey(modelKey);
-
-    $('[data-event-status]').innerHTML = statusHtml(model);
-    $('[data-model-switcher]').innerHTML = switcherHtml(model);
-    document.querySelectorAll('[data-model]').forEach((el) => {
-      el.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (el.dataset.model === modelKey) return;
-        switchModel(modelByKey(el.dataset.model).key);
-      });
-    });
+    $('[data-event-status]').innerHTML = statusHtml();
 
     const enriched = enrichScenarios(data.scenarios, weather.target.targetDate, weather.locations);
 
@@ -238,8 +197,7 @@ async function main() {
     if (!fatalErrorKey) renderAll(); // same data, new language (no refetch)
   });
 
-  weather = await loadWeather(data, modelKey);
-  weatherByModel.set(modelKey, weather);
+  weather = await loadWeather(data);
   renderAll();
 }
 

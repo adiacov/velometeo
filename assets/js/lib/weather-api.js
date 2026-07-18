@@ -1,17 +1,10 @@
 // Open-Meteo integration: event temporal state, request building, response
 // normalization. Contract: specs/001-velometeo-mvp/contracts/open-meteo.md.
 
-// Model ids verified against the live API on 2026-07-16.
-export const MODELS = [
-  { key: 'ecmwf', label: 'ECMWF', apiModel: 'ecmwf_ifs025', horizonDays: 15 },
-  { key: 'icon', label: 'ICON', apiModel: 'icon_seamless', horizonDays: 7 },
-];
-
-export const DEFAULT_MODEL_KEY = 'ecmwf';
-
-export function modelByKey(key) {
-  return MODELS.find((m) => m.key === key) || MODELS.find((m) => m.key === DEFAULT_MODEL_KEY);
-}
+// Model id verified against the live API on 2026-07-16. ECMWF is the only
+// provider (owner decision 2026-07-18): longest free horizon on Open-Meteo,
+// global gold-standard model — see specs/005-single-provider-forecast/research.md R1.
+export const MODEL = { label: 'ECMWF', apiModel: 'ecmwf_ifs025', horizonDays: 15 };
 
 const FORECAST_BASE = 'https://api.open-meteo.com/v1/forecast';
 
@@ -94,8 +87,7 @@ export function daysUntilForecast(event, now, horizonDays) {
 // deduplicated sample positions, date range covering the longest scenario
 // anchored at the forecast target date (event day if upcoming, today if
 // past — see forecastTarget). `event` supplies start/maxDurationHours only.
-export function buildWeatherUrl({ positions, event, targetDate, modelKey, timezone }) {
-  const model = modelByKey(modelKey);
+export function buildWeatherUrl({ positions, event, targetDate, timezone }) {
   const lastDay = addDays(targetDate, Math.ceil((minutesOf(event.start) / 60 + event.maxDurationHours) / 24));
 
   const params = new URLSearchParams({
@@ -106,7 +98,7 @@ export function buildWeatherUrl({ positions, event, targetDate, modelKey, timezo
     end_date: lastDay,
     timezone,
     wind_speed_unit: 'kmh',
-    models: model.apiModel,
+    models: MODEL.apiModel,
   });
   return `${FORECAST_BASE}?${params}`;
 }
