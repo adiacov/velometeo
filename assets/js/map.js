@@ -76,18 +76,37 @@ export function initMap(containerId, route, waypoints) {
   // themes. A dark basemap makes the near-black weather markers/controls blend
   // in; a single light "printed map" panel stays legible everywhere, so the
   // map's overlays are pinned to a fixed light scheme in CSS (theme-independent).
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  // The basemap is split (004 US1): a `light_nolabels` base carries roads/terrain,
+  // and place-name labels ride a separate `light_only_labels` layer on a pane
+  // ABOVE the route overlay so labels are never hidden by the route line.
+  const cartoAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>';
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
     maxZoom: 20,
     subdomains: 'abcd',
     detectRetina: true,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    attribution: cartoAttribution,
+  }).addTo(map);
+
+  // Dedicated pane for the labels layer, ordered above the route overlay (z 400)
+  // but below the interactive weather markers (z 600); decorative, so it never
+  // eats clicks. Exact z-index lives in CSS (.leaflet-labels-pane, 004 US1).
+  const labelsPane = map.createPane('labels');
+  labelsPane.style.pointerEvents = 'none';
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
+    maxZoom: 20,
+    subdomains: 'abcd',
+    detectRetina: true,
+    pane: 'labels',
+    attribution: cartoAttribution,
   }).addTo(map);
 
   // A cased route line: a wide paper-colored halo (.route-casing) under the
-  // ink line (.route-line) so the route reads over any basemap. Colors are
-  // monochrome fallbacks; real per-theme ink/paper comes from CSS.
-  L.polyline(route.points, { color: '#fff', weight: 6, opacity: 1, className: 'route-casing' }).addTo(map);
-  const routeLine = L.polyline(route.points, { color: '#111', weight: 3, opacity: 1, className: 'route-line' }).addTo(map);
+  // ink line (.route-line) so the route reads over any basemap. With labels now
+  // drawn on top (US1), the line returns to a comfortable weight (003 had trimmed
+  // it to 3 as a stopgap). Colors are monochrome fallbacks; real per-theme
+  // ink/paper comes from CSS.
+  L.polyline(route.points, { color: '#fff', weight: 8, opacity: 1, className: 'route-casing' }).addTo(map);
+  const routeLine = L.polyline(route.points, { color: '#111', weight: 5, opacity: 1, className: 'route-line' }).addTo(map);
   const bounds = routeLine.getBounds();
   if (bounds.isValid()) map.fitBounds(bounds, { padding: [40, 40] });
 

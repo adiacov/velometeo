@@ -209,6 +209,11 @@ td:first-child{font-weight:850;color:var(--text)}
    colours here, independent of the page theme; grayscale(1) removes CARTO's
    faint residual hue (pink admin borders / water). Achromatic only. */
 .leaflet-tile-pane{filter:grayscale(1)}
+/* Place-name labels ride their own pane (004 US1) above the route overlay
+   (z 400) but below the interactive weather markers (z 600), so labels are
+   never hidden by the route line. Grayscale strips CARTO's faint residual hue,
+   keeping labels achromatic. */
+.leaflet-labels-pane{z-index:450;filter:grayscale(1)}
 .leaflet-overlay-pane .route-casing{stroke:#fff}
 .leaflet-overlay-pane .route-line{stroke:#111}
 .leaflet-overlay-pane .route-checkpoint{stroke:#111;fill:#fff}
