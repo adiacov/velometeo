@@ -133,7 +133,9 @@ export function initMap(containerId, route, waypoints) {
       radius: 8,
       color: '#111',
       fillColor: '#fff',
-      fillOpacity: 0.95,
+      // Fully opaque so the dot reads cleanly over the heavier route line
+      // (US1 restored the route weight); 004 US4.
+      fillOpacity: 1,
       weight: 2,
       className: 'route-checkpoint',
     });

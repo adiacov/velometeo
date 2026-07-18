@@ -3,6 +3,10 @@
 .env.*
 *.log
 
+# Python bytecode cache (tools/ import artifacts)
+__pycache__/
+*.pyc
+
 # Agent Workspace legacy local cache
 .agent/
 

@@ -52,6 +52,13 @@ true-dark map.
 2. **Expected**: each is legible, distinguishable, and strictly monochrome.
 3. `npm test` green (monochrome guard).
 
+**Confirmed 2026-07-18**: an opened weather popup (captured via a same-origin
+iframe harness) reads clean — white card, dark text, gray `×` close, no colour;
+the zoom control (+/−) and checkpoint dots (white circle, dark ring) are legible
+and distinguishable from the weather cards over the now-heavier route line.
+Checkpoint dots set to full opacity so they stay crisp over the thicker line.
+`tests/monochrome.test.js` green.
+
 ## US5 — GPX auto-simplification Action
 
 Exercise the workflow on the branch:
