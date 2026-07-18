@@ -59,6 +59,9 @@ async function main() {
     if (rowsByKind) renderWeatherMarkers(mapHandle, rowsByKind.get(scenarioKind).rows, t, mode);
   }
 
+  // "All hours" shows more markers as you zoom in (004 US2); re-render on zoom.
+  mapHandle.map.on('zoomend', renderMarkers);
+
   scenarioControl.addEventListener('click', () => {
     scenarioKind = kinds[(kinds.indexOf(scenarioKind) + 1) % kinds.length];
     setParam('scenario', scenarioKind);
