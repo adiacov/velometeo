@@ -149,6 +149,9 @@ table{width:100%;border-collapse:separate;border-spacing:0;min-width:900px}
 th,td{text-align:left;border-bottom:1px solid var(--line);padding:13px 11px;vertical-align:middle;font-size:14px}
 th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted2);background:var(--surface-soft);position:sticky;top:0;z-index:1;box-shadow:0 4px 8px -4px rgba(0,0,0,.12)}
 th.cond,td.cond{width:2.2em;padding-left:4px;padding-right:4px;text-align:center;font-size:16px}
+/* Monochrome condition/toggle icons (003 US2): inline currentColor SVG sized
+   to the surrounding text; nudge to sit on the text baseline. */
+td.cond svg,.hour-card .time svg,.weather-marker svg,.weather-popup svg,.theme-toggle svg{vertical-align:-.125em}
 tbody tr:nth-child(even){background:var(--surface-soft)}
 tbody tr:hover{background:var(--accent-soft)}
 td:first-child{font-weight:850;color:var(--text)}

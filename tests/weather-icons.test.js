@@ -22,6 +22,22 @@ test('every documented WMO code maps to a bucket', () => {
   }
 });
 
+test('every icon is a monochrome currentColor SVG with no emoji (003 US2)', () => {
+  const emoji = /[☀-➿\u{1f000}-\u{1faff}️]/u;
+  const seen = new Set();
+  for (const code of ALL_WMO_CODES) {
+    const { icon } = weatherCondition(code);
+    if (seen.has(icon)) continue;
+    seen.add(icon);
+    assert.ok(icon.startsWith('<svg'), `icon for code ${code} is not inline SVG`);
+    assert.match(icon, /stroke="currentColor"/, `icon for code ${code} lacks currentColor`);
+    assert.match(icon, /aria-hidden="true"/, `icon for code ${code} lacks aria-hidden`);
+    assert.doesNotMatch(icon, emoji, `icon for code ${code} still contains emoji`);
+    assert.doesNotMatch(icon, /fill="#|stroke="#|rgb/, `icon for code ${code} has a hardcoded color`);
+  }
+  assert.equal(seen.size, 8, 'expected 8 distinct condition glyphs');
+});
+
 test('representative codes land in the right bucket', () => {
   const expect = {
     0: 'weather.clear',
