@@ -9,9 +9,10 @@ event page, hosted for free on GitHub Pages.
   shown as fast / typical / official-limit bands.
 - **Pace mode**: scenarios at 20 / 25 / 27 / 30 km/h average speed.
 - Weather is fetched **in the visitor's browser** from
-  [Open-Meteo](https://open-meteo.com) (free, no API key) — the forecast is
-  fresh on every page load, and pages for past events permanently show the
-  **actual observed weather** of event day.
+  [Open-Meteo](https://open-meteo.com) (free, no API key), ECMWF model —
+  the forecast is fresh on every page load. Upcoming events show the
+  forecast for the event day; past events show today's forecast, so you
+  can still check conditions before riding the route again.
 - Mobile-first, light/dark theme, Romanian / English / Russian, Leaflet map
   with hourly weather markers and wind arrows.
 - Fully static: no backend, no build step, no secrets, no scheduled jobs.
@@ -102,12 +103,16 @@ Notes:
 
 ## How the weather works
 
-- **Upcoming events** use the Open-Meteo forecast API (models: ECMWF,
-  ICON — switchable on the page). Forecasts reach ~15 days out (ECMWF) /
-  ~7 days (ICON); before that the page shows the route and scenarios with
-  a "forecast opens in N days" note.
-- **Past events** switch automatically to observed data (Open-Meteo
-  archive), clearly labeled — event pages become a permanent record.
+- Every page uses the Open-Meteo **forecast** API with the **ECMWF**
+  model, reaching ~15 days out. The status line always states the exact
+  date the forecast is for.
+- **Upcoming events** show the forecast for the event day; more than
+  ~15 days out, the page shows the route and scenarios with a "forecast
+  opens in N days" note instead.
+- **Past events** show today's forecast (the day the page is opened) —
+  useful if you want to ride the route again and need current
+  conditions. There is no historical/observed data; velometeo does not
+  keep a weather record of what actually happened on event day.
 - Missing values are shown as `—`. velometeo never invents numbers.
 - Open-Meteo is free for non-commercial use (fair use ~10,000 calls/day;
   a page load costs a couple of calls). No key, no signup.

@@ -68,8 +68,8 @@
 
 ## Phase 5: Polish & Cross-Cutting
 
-- [ ] T015 [P] Update `README.md`: single provider (ECMWF via Open-Meteo), remove model-switcher mentions; check forker instructions unaffected (constitution IV).
-- [ ] T016 Final sweep: `npm test` (all green), `node --check` on all edited JS, headless-Chrome screenshots of index/event/map in both themes for the owner review, quickstart §6 doc checks (constitution v1.1.0, README). Commit.
+- [x] T015 [P] Update `README.md`: single provider (ECMWF via Open-Meteo), remove model-switcher mentions; check forker instructions unaffected (constitution IV).
+- [x] T016 Final sweep: `npm test` (all green), `node --check` on all edited JS, headless-Chrome screenshots of index/event/map in both themes for the owner review, quickstart §6 doc checks (constitution v1.1.0, README). Commit.
 
 ---
 
