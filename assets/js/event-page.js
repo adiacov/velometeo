@@ -152,6 +152,23 @@ async function main() {
   let modelKey = persistedModel().key;
   let weather = null;
   let openKind = null;
+  const weatherByModel = new Map(); // page-lifetime cache: switching back is instant
+  let fetchSeq = 0; // guards against a slow fetch overwriting a newer model choice
+
+  // Switch models with instant visual feedback: the active button and the
+  // status pill re-render immediately (tables briefly keep the previous
+  // model's rows), then the fetch fills in the new data.
+  async function switchModel(key) {
+    modelKey = key;
+    localStorage.setItem(MODEL_STORAGE_KEY, modelKey);
+    renderAll();
+    const seq = ++fetchSeq;
+    const next = weatherByModel.get(key) || await loadWeather(data, key); // lazy: selected model only
+    weatherByModel.set(key, next);
+    if (seq !== fetchSeq) return; // a newer switch already took over
+    weather = next;
+    renderAll();
+  }
 
   function mapPageUrl(kind) {
     const q = new URLSearchParams({ event: entry.id, scenario: kind, back: `event.html?event=${entry.id}` });
@@ -179,13 +196,10 @@ async function main() {
     $('[data-event-status]').innerHTML = statusHtml(model);
     $('[data-model-switcher]').innerHTML = switcherHtml(model);
     document.querySelectorAll('[data-model]').forEach((el) => {
-      el.addEventListener('click', async (e) => {
+      el.addEventListener('click', (e) => {
         e.preventDefault();
         if (el.dataset.model === modelKey) return;
-        modelKey = modelByKey(el.dataset.model).key;
-        localStorage.setItem(MODEL_STORAGE_KEY, modelKey);
-        weather = await loadWeather(data, modelKey); // lazy: selected model only
-        renderAll();
+        switchModel(modelByKey(el.dataset.model).key);
       });
     });
 
@@ -225,6 +239,7 @@ async function main() {
   });
 
   weather = await loadWeather(data, modelKey);
+  weatherByModel.set(modelKey, weather);
   renderAll();
 }
 
