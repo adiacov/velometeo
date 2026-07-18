@@ -72,13 +72,11 @@ export function initMap(containerId, route, waypoints) {
   // Drop Leaflet's default prefix (it embeds a colored flag emoji) — keep the
   // page strictly monochrome (003).
   map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
-  // Minimal monochrome basemap (CARTO, keyless): Positron in light, Dark
-  // Matter in dark — purpose-built clean maps, so no CSS grayscale filter and
-  // far less clutter than filtered OSM. The map page has no theme toggle, so
-  // read the resolved theme once (same source of truth as theme.js).
-  const isDark = (localStorage.getItem('velometeo.theme')
-    || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) === 'dark';
-  L.tileLayer(`https://{s}.basemaps.cartocdn.com/${isDark ? 'dark_all' : 'light_all'}/{z}/{x}/{y}{r}.png`, {
+  // Minimal monochrome basemap: CARTO Positron (keyless), used in BOTH page
+  // themes. A dark basemap makes the near-black weather markers/controls blend
+  // in; a single light "printed map" panel stays legible everywhere, so the
+  // map's overlays are pinned to a fixed light scheme in CSS (theme-independent).
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     maxZoom: 20,
     subdomains: 'abcd',
     detectRetina: true,
