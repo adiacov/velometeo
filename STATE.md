@@ -57,8 +57,11 @@ labels in ro/en/ru.
 
 ## Next action
 
-- **Future "map" feature (its own spec-kit cycle, owner 2026-07-18):**
-  collected map polish deferred out of 003 —
+- **Feature 004 — map legibility & polish: BRIEF ready, not yet specified.**
+  Read `specs/004-map-legibility/BRIEF.md` and run the whole Spec Kit flow
+  (specify → clarify → plan → tasks → phase-gated implement). Owner decisions
+  are locked in the brief (single light map; fewer markers at wide zoom).
+  Deferred out of 003 —
   - Labels vs route: route still overlaps some place names. Real fix is a
     layered basemap — CARTO `light_nolabels` base + `light_only_labels` on a
     top pane so labels draw *above* the route (route weight already trimmed
