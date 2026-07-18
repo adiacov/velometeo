@@ -16,6 +16,28 @@ cache revalidation).
 
 ## Active work
 
+Feature 004 (map legibility & polish) is **DONE and merged to `main`
+(fast-forward, 2026-07-18); deploying via Pages**. Full spec-kit cycle
+(`specs/004-map-legibility/`), phase-gated with a commit per story; 61 unit
+tests green. Delivered: **US1** — CARTO basemap split into `light_nolabels`
+base + `light_only_labels` on a dedicated Leaflet pane (z 450, above the route
+overlay, below weather markers) so place names always draw over the route;
+route line weight restored (line 3→5, casing 6→8). **US3** — verified the
+single fixed light "printed map" holds in both page themes (overlays use
+hardcoded #fff/#111, not theme vars). **US4** — checkpoint dots full-opacity so
+they read over the heavier line; popup/zoom-control clarity confirmed
+(monochrome). **US5** — first repo workflow `.github/workflows/simplify-routes.yml`
+(push/PR/dispatch on `routes/**`, NEVER cron; `contents: write`) runs
+`tools/simplify_routes.py` (reuses `add_route.py` RDP + `vm:simplified` marker,
+idempotent/loop-safe) to auto-simplify committed GPX and commit the smaller file
+back. **US2 was implemented then reverted** (owner call, 2026-07-18): a
+zoom-reactive marker subset wrongly hid markers ("All Hours" must show one
+marker per ride-hour; the All Hours / Key Hours button is what reduces). Two
+items verifiable only upstream: US2 is moot now; US5's live CI run happens on the
+first real push to `routes/` after merge. Verified via headless-Chrome
+screenshots (labels-over-route, dark-theme fixed light map, opened popup) + DOM
+dumps + `npm test`.
+
 Feature 003 (monochrome e-reader restyle) is **DONE and merged to `main`
 (fast-forward, 2026-07-18); deploying via Pages**. Full spec-kit cycle; all
 12 tasks done, phase-gated with a commit per phase; 61 unit tests green
