@@ -79,33 +79,14 @@ labels in ro/en/ru.
 
 ## Next action
 
-- **Feature 004 — map legibility & polish: BRIEF ready, not yet specified.**
-  Read `specs/004-map-legibility/BRIEF.md` and run the whole Spec Kit flow
-  (specify → clarify → plan → tasks → phase-gated implement). Owner decisions
-  are locked in the brief (single light map; fewer markers at wide zoom).
-  Deferred out of 003 —
-  - Labels vs route: route still overlaps some place names. Real fix is a
-    layered basemap — CARTO `light_nolabels` base + `light_only_labels` on a
-    top pane so labels draw *above* the route (route weight already trimmed
-    to 3 in 003 as a stopgap).
-  - Marker declutter at the "all hours" zoom (weather cards overlap).
-  - Revisit whether a true dark map is wanted (003 uses one fixed light map
-    panel in both themes because near-black markers/controls blended on a
-    dark basemap).
-  - Owner hint: some of this may be assistable by the upload/add-route
-    script (e.g. route metadata), TBD when the feature is scoped.
-- Add the next real routes (the 300+200 brevet) via `tools/add_route.py` —
-  first real-world test of the two-file promise (SC-003).
-- Delacau URL story: DONE (2026-07-17) — the old
-  `delacau-200-brm-weather-forecast` repo is archived; all its pages
-  redirect to `event.html?event=delacau-200-brm` and its daily workflow
-  was removed.
-- Monochrome restyle (owner request 2026-07-17): DONE as feature 003 —
-  implemented on `003-monochrome-restyle`, pending owner review + merge.
-- GPX simplification follow-up (`specs/001-velometeo-mvp/parity-check.md`):
-  DONE (2026-07-18) — `tools/add_route.py --simplify` (RDP) added; Delacau
-  GPX regenerated 282→65 KB. The weather icon/label follow-up is DONE
-  (feature 002).
+- Future improvement (owner, not yet scoped): make `tools/add_route.py`
+  interactive — prompt for any missing argument (numbered choices /
+  optional readline autocomplete) alongside the current flag-based path;
+  must stay stdlib-only and non-TTY-safe. Revisit after seeing the tools
+  in use post-004.
+- Contribution path for others: explored and **dropped** (owner call,
+  2026-07-18) — all variants were too complex or too compromised. Forking
+  remains the only contribution path. Do not re-propose.
 
 ## Blockers
 
