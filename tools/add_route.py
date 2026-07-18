@@ -7,6 +7,12 @@ Usage:
   python3 tools/add_route.py ride.gpx --name "Delacau 200 BRM" \
       --date 2026-05-31 --start 06:00 --mode brevet [--id slug] \
       [--timezone Europe/Chisinau] [--force] [--commit]
+
+The track is simplified automatically (Ramer–Douglas–Peucker, ~5 m) to shrink
+the served .gpx; waypoints are kept. It is idempotent — a file already carrying
+our marker is copied unchanged, so re-adding never re-simplifies. Override the
+tolerance with --simplify <metres>, or keep the source verbatim with
+--no-simplify.
 """
 
 import argparse
@@ -30,6 +36,13 @@ STANDARD_DISTANCES = [200, 300, 400, 600, 1000, 1200]
 DEVIATION_WARN = 0.15
 
 GPX_NS = "{http://www.topografix.com/GPX/1/1}"
+
+# Private marker written onto <gpx> when we simplify, so re-adding an already
+# processed route never simplifies it again (idempotent; foreign-namespace
+# attributes are ignored by GPX consumers and the site's parser).
+VM_NS = "https://adiacov.github.io/velometeo/ns"
+VM_SIMPLIFIED = f"{{{VM_NS}}}simplified"
+DEFAULT_SIMPLIFY_M = 5.0
 
 
 def fail(message: str) -> None:
@@ -93,11 +106,21 @@ def _rdp_mask(xy, epsilon):
     return keep
 
 
+def is_simplified(path: Path) -> bool:
+    """True if the GPX carries our simplification marker (already processed)."""
+    try:
+        return ET.parse(path).getroot().get(VM_SIMPLIFIED) is not None
+    except ET.ParseError:
+        return False
+
+
 def simplify_gpx_file(src: Path, dst: Path, tolerance_m: float):
     """Thin each <trkseg> with RDP at `tolerance_m` metres; waypoints and all
-    other structure are left untouched. Writes dst. Returns
+    other structure are left untouched. Stamps a marker so it is not
+    re-simplified later. Writes dst. Returns
     (pts_before, pts_after, km_before, km_after)."""
     ET.register_namespace("", GPX_NS.strip("{}"))
+    ET.register_namespace("vm", VM_NS)
     tree = ET.parse(src)
     root = tree.getroot()
     before = [(float(p.get("lat")), float(p.get("lon"))) for p in root.iter(f"{GPX_NS}trkpt")]
@@ -116,6 +139,7 @@ def simplify_gpx_file(src: Path, dst: Path, tolerance_m: float):
             else:
                 seg.remove(elem)
     km_after = sum(haversine_km(after[i - 1], after[i]) for i in range(1, len(after)))
+    root.set(VM_SIMPLIFIED, f"{tolerance_m:g}")
     tree.write(dst, encoding="UTF-8", xml_declaration=True)
     return len(before), len(after), km_before, km_after
 
@@ -185,10 +209,12 @@ def main() -> None:
     parser.add_argument("--id", dest="event_id", help="URL slug (default: from name)")
     parser.add_argument("--timezone", help="IANA zone (default Europe/Chisinau, omitted if not set)")
     parser.add_argument(
-        "--simplify", nargs="?", const=10.0, type=float, metavar="METERS",
-        help="thin the track with Ramer–Douglas–Peucker at the given tolerance "
-             "in metres (default 10) to shrink the served .gpx; waypoints kept",
+        "--simplify", nargs="?", const=DEFAULT_SIMPLIFY_M, type=float,
+        default=DEFAULT_SIMPLIFY_M, metavar="METERS",
+        help=f"RDP simplification tolerance in metres (default {DEFAULT_SIMPLIFY_M:g}); "
+             "runs automatically, waypoints kept, already-simplified files skipped",
     )
+    parser.add_argument("--no-simplify", action="store_true", help="keep the source GPX unchanged (skip simplification)")
     parser.add_argument("--force", action="store_true", help="overwrite an existing routes/<id>.gpx")
     parser.add_argument("--commit", action="store_true", help="git add + commit + push the two files")
     args = parser.parse_args()
@@ -231,15 +257,19 @@ def main() -> None:
     if args.timezone:
         entry["timezone"] = args.timezone
 
-    if args.simplify is not None:
+    if args.no_simplify:
+        shutil.copyfile(args.gpx, target)
+        print("simplification skipped (--no-simplify)")
+    elif is_simplified(args.gpx):
+        shutil.copyfile(args.gpx, target)
+        print("source GPX already simplified (marker present) — copied unchanged")
+    else:
         nb, na, kb, ka = simplify_gpx_file(args.gpx, target, args.simplify)
         pct = 100 * (1 - na / nb) if nb else 0
         print(
             f"simplified track: {nb} -> {na} points ({pct:.0f}% fewer), "
             f"length {kb:.1f} -> {ka:.1f} km, tolerance {args.simplify:g} m"
         )
-    else:
-        shutil.copyfile(args.gpx, target)
     manifest["events"].append(entry)
     manifest["events"].sort(key=lambda e: (e.get("date", ""), e.get("id", "")))
     write_manifest(manifest)
