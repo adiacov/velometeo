@@ -1,0 +1,57 @@
+# Auto-simplify committed GPX routes (feature 004 US5).
+#
+# When a curator drops an un-processed GPX into routes/ and pushes, this
+# simplifies it (RDP ~5 m, reusing tools/add_route.py logic via
+# tools/simplify_routes.py) and commits the smaller file back — so the two-file
+# route-addition promise never needs a manual simplification step.
+#
+# Idempotent + loop-safe: files carrying the in-file `vm:simplified` marker are
+# left untouched, so the bot's own commit produces only marked files and the
+# next run is a no-op. (GITHUB_TOKEN pushes also do not re-trigger workflows.)
+#
+# Constitution VII: triggered by push / pull_request / manual dispatch on
+# routes/** — NEVER a `schedule:` cron.
+name: Simplify routes
+
+on:
+  push:
+    paths:
+      - "routes/**"
+  pull_request:
+    paths:
+      - "routes/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  simplify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Simplify unprocessed GPX in routes/
+        run: python3 tools/simplify_routes.py
+
+      - name: Commit simplified files back
+        # Only push on same-repo events (push / manual dispatch). On a
+        # pull_request (esp. from a fork) GITHUB_TOKEN is read-only, so we skip
+        # the push and let the run report without failing the PR.
+        if: github.event_name != 'pull_request'
+        run: |
+          if git diff --quiet -- routes/; then
+            echo "no changes — nothing to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add routes/
+          git commit -m "chore: auto-simplify committed GPX route(s)"
+          git push

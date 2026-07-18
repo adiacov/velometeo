@@ -68,6 +68,16 @@ most systems).
 
 3. Commit. The page appears on the index after Pages redeploys (~1 min).
 
+You don't need to shrink the GPX yourself. On every push that touches
+`routes/`, the **Simplify routes** GitHub Action
+(`.github/workflows/simplify-routes.yml`) auto-simplifies any new GPX
+(Ramer–Douglas–Peucker, ~5 m; waypoints kept) and commits the smaller file
+back. It is idempotent — a file it has already processed carries an internal
+marker and is left untouched, so it never re-runs on itself. (Option A's script
+already simplifies locally, so those files are skipped by the Action.) Pull
+after the Action runs to get the simplified file. This keeps route-adding a
+strict two-file operation: your GPX + one `routes/index.json` entry.
+
 ### Config reference
 
 | Field | Required | Meaning |
