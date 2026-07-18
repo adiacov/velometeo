@@ -34,23 +34,6 @@ function keyIndexes(rows) {
   return indexes;
 }
 
-// In "all hours" mode the map shows an evenly-spaced SUBSET of the hourly
-// markers, growing with zoom, so crowded/twisty routes stay readable at wide
-// zoom (the forecast table carries the full detail). Start (0) and finish (n-1)
-// are always shown; the count never shrinks as you zoom in; at high zoom all
-// markers show. No clustering, no collision math (004 US2). `steps` is how many
-// zoom levels past the initial fit view we are.
-const SMALL_ENOUGH = 6; // this few never overlap — always show all
-const WIDE_TARGET = 6; // markers shown at the initial fit view
-function visibleAllHourIndexes(n, steps) {
-  if (n <= SMALL_ENOUGH) return new Set(Array.from({ length: n }, (_, i) => i));
-  let k = Math.round(WIDE_TARGET * Math.pow(1.7, Math.max(0, steps)));
-  k = Math.max(2, Math.min(k, n));
-  const set = new Set([0, n - 1]);
-  for (let i = 0; i < k; i += 1) set.add(Math.round((i * (n - 1)) / (k - 1)));
-  return set;
-}
-
 function markerIcon(row, compact) {
   const wp = row.weather;
   const cls = isCaution(wp) ? 'warn' : 'ok';
@@ -154,15 +137,7 @@ export function initMap(containerId, route, waypoints) {
 // transitions with full-size icons.
 export function renderWeatherMarkers(handle, rows, t, mode = 'all') {
   handle.weatherLayer.clearLayers();
-  let keys;
-  if (mode === 'key') {
-    keys = keyIndexes(rows);
-  } else {
-    // Reveal more markers as the user zooms past the initial fit-bounds view.
-    const fitZoom = handle.bounds && handle.bounds.isValid() ? handle.map.getBoundsZoom(handle.bounds) : handle.map.getZoom();
-    const steps = handle.map.getZoom() - fitZoom;
-    keys = visibleAllHourIndexes(rows.length, steps);
-  }
+  const keys = mode === 'all' ? null : keyIndexes(rows);
   rows.forEach((row, i) => {
     if (keys && !keys.has(i)) return;
     const marker = L.marker([row.lat, row.lon], { icon: markerIcon(row, mode === 'all') });
