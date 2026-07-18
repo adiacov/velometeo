@@ -30,7 +30,7 @@ Flat static site at repo root: `assets/css/`, `assets/js/`, `assets/fonts/`
 **Purpose**: Make the monochrome invariant executable before touching any
 pixel, so every later task is verified by `npm test`.
 
-- [ ] T001 Create tests/monochrome.test.js: parse assets/css/style.css and
+- [X] T001 Create tests/monochrome.test.js: parse assets/css/style.css and
       assert every color literal (hex, rgb/rgba, hsl, named) is achromatic
       (channel-equal or alpha over achromatic), assert zero `gradient(` and
       `backdrop-filter` occurrences, and assert
@@ -47,7 +47,7 @@ pixel, so every later task is verified by `npm test`.
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T002 In assets/css/style.css, add `--paper`/`--ink` and retarget the
+- [X] T002 In assets/css/style.css, add `--paper`/`--ink` and retarget the
       values of every existing custom property (`--bg` … `--soft-shadow`)
       to the achromatic ladder from data-model.md, identically in all
       three theme blocks (`:root`, `:root[data-theme="dark"]`, and the
@@ -71,7 +71,7 @@ focus.
 themes: zero hue anywhere except the (not yet replaced) emoji and map
 tiles; `tests/monochrome.test.js` stylesheet assertions pass.
 
-- [ ] T003 [US1] In assets/css/style.css remove/replace non-color effects:
+- [X] T003 [US1] In assets/css/style.css remove/replace non-color effects:
       body radial-gradient → plain `var(--bg)`; hero linear-gradient →
       `var(--surface)`; delete the `.hero:before` colored stripe; delete
       `backdrop-filter` on `.lang a`/`.theme-toggle`; replace every
@@ -79,7 +79,7 @@ tiles; `tests/monochrome.test.js` stylesheet assertions pass.
       add `:focus-visible { outline: 2px solid var(--text);
       outline-offset: 2px }` for links, buttons, summaries (R6, FR-002,
       FR-011).
-- [ ] T004 [US1] In assets/css/style.css sweep remaining hardcoded color
+- [X] T004 [US1] In assets/css/style.css sweep remaining hardcoded color
       literals in component rules: `#fff`/`#06201d`/`#061815` on active
       pills and buttons → `var(--paper)`/`var(--ink)` scheme; dark-theme
       zebra hexes `#1d2c44`/`#111827` → translucent-ink zebra tokens;
@@ -106,7 +106,7 @@ map markers, theme toggle all show single-color line glyphs in both
 themes (including on inverted surfaces); full `npm test` green including
 the emoji assertions.
 
-- [ ] T005 [P] [US2] In assets/js/lib/weather-icons.js replace the eight
+- [X] T005 [P] [US2] In assets/js/lib/weather-icons.js replace the eight
       emoji `icon` values with inline Lucide SVG strings (sun, cloud-sun,
       cloud, cloud-fog, cloud-drizzle, cloud-rain, cloud-snow,
       cloud-lightning) using the exact attribute shape from data-model.md
@@ -115,10 +115,10 @@ the emoji assertions.
       attribution to the file header. Extend tests/weather-icons.test.js:
       every bucket `icon` starts with `<svg`, contains `currentColor` and
       `aria-hidden`, and contains no code point above U+2000.
-- [ ] T006 [P] [US2] In assets/js/theme.js replace the 🌙/☀️ toggle text
+- [X] T006 [P] [US2] In assets/js/theme.js replace the 🌙/☀️ toggle text
       with the Lucide moon/sun SVG strings via `innerHTML` (same attribute
       shape), keeping the existing aria-label/title behavior intact.
-- [ ] T007 [US2] In assets/css/style.css add icon alignment rules:
+- [X] T007 [US2] In assets/css/style.css add icon alignment rules:
       `td.cond svg, .weather-cell svg, .weather-marker svg,
       .weather-popup svg, .hour-card svg, .theme-toggle svg
       { vertical-align: -0.125em }` (adjust selectors to actual markup),
@@ -142,7 +142,7 @@ US1+US2 independently verified. Good owner-review/screenshot point.
 warn hour in table, mobile cards, and map markers; warn reads as the
 stronger signal on a grayscale screen.
 
-- [ ] T008 [US3] In assets/css/style.css apply the status encoding on top
+- [X] T008 [US3] In assets/css/style.css apply the status encoding on top
       of the R3 tokens: `.status.ok` and `.weather-marker.ok` get
       `border: 1px solid var(--border)` on paper; verify `.status.warn` /
       `.weather-marker.warn` render inverted (ink bg, paper text/icons —
@@ -164,7 +164,7 @@ line.
 third-party font requests, serif headings/sans body in all three
 languages, grayscale tiles + ink route line in both themes.
 
-- [ ] T009 [P] [US4] Create assets/fonts/: download Fontsource woff2 for
+- [X] T009 [P] [US4] Create assets/fonts/: download Fontsource woff2 for
       Literata 600+700 and Inter 400+700 in latin, latin-ext, cyrillic
       subsets (12 files, ≈300–400 KB total) plus OFL.txt with both
       licenses; add `@font-face` rules with `unicode-range` per subset and
@@ -175,7 +175,7 @@ languages, grayscale tiles + ink route line in both themes.
       `<link rel="preload" as="font" type="font/woff2" crossorigin>` for
       the latin regular/bold files in index.html, event.html, map.html
       (R5, FR-010).
-- [ ] T010 [P] [US4] In assets/css/style.css add map monochrome rules:
+- [X] T010 [P] [US4] In assets/css/style.css add map monochrome rules:
       `.leaflet-tile-pane { filter: grayscale(1) contrast(1.05) }` (light)
       and `grayscale(1) invert(1) brightness(.85) contrast(1.1)` in both
       dark selector paths; `.leaflet-overlay-pane path { stroke:
@@ -191,13 +191,13 @@ languages, grayscale tiles + ink route line in both themes.
 
 ## Phase 7: Polish & Cross-Cutting
 
-- [ ] T011 Full validation pass per specs/003-monochrome-restyle/quickstart.md:
+- [X] T011 Full validation pass per specs/003-monochrome-restyle/quickstart.md:
       `npm test` (all green), both themes × three pages served locally,
       OS-derived vs explicit dark theme identical, focus traversal,
       contrast spot-checks (SC-004), print sanity, RO/EN/RU font
       rendering; screenshot event page (light + dark) for owner review
       per phase-gated workflow.
-- [ ] T012 Update STATE.md (Active work → feature 003 status, Next action
+- [X] T012 Update STATE.md (Active work → feature 003 status, Next action
       cleanup: remove the restyle backlog item) and record the
       constitution VI visual-layer supersession note; verify CLAUDE.md
       speckit pointer already targets specs/003-monochrome-restyle/plan.md.
