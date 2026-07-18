@@ -30,13 +30,17 @@ self-hosted OFL fonts (Literata headings, Inter body) in `assets/fonts/`
 "study Delacau, don't redesign" is deliberately superseded on the visual
 layer only (owner-approved 2026-07-17, recorded in the spec).
 
-Post-implementation owner feedback (2026-07-18) added three map follow-up
-commits on the same branch: (1) map basemap swapped from CSS-filtered OSM to
-CARTO Positron/Dark Matter (keyless minimal monochrome tiles, chosen by
-theme; a light `grayscale(1)` kills residual hue) — far more legible; (2) a
-cased route line (paper halo under ink line) + zoom-control contrast fix so
-buttons don't vanish on the dark map and attribution links aren't Leaflet
-blue; (3) `tools/add_route.py --simplify` (RDP) and Delacau GPX regenerated
+Post-implementation owner feedback (2026-07-18) added map + pipeline
+follow-ups on the same branch: (1) map basemap swapped from CSS-filtered OSM
+to CARTO Positron (keyless minimal monochrome tiles) + a cased route line
+(paper halo under ink line); (2) the map is now a single fixed **light**
+"printed map" panel in BOTH page themes — a dark basemap made the near-black
+weather markers/checkpoint buttons/zoom controls blend into the near-black
+tiles, so map overlays are pinned to a fixed light scheme independent of the
+page theme (always legible); (3) GPX simplification is now automatic in
+`tools/add_route.py` (RDP ~5 m, default on; `--no-simplify` to skip) and
+**idempotent** — a private `vm:simplified` marker on `<gpx>` means an
+already-processed file is copied unchanged, never re-simplified. Delacau GPX
 282→65 KB. Verified in both themes via headless-Chrome screenshots
 (index/event/map, RO + RU Cyrillic, OS-dark = explicit-dark parity, WCAG AA
 contrast). Next: owner review, then merge to `main`.
