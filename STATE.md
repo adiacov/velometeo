@@ -57,6 +57,18 @@ labels in ro/en/ru.
 
 ## Next action
 
+- **Future "map" feature (its own spec-kit cycle, owner 2026-07-18):**
+  collected map polish deferred out of 003 —
+  - Labels vs route: route still overlaps some place names. Real fix is a
+    layered basemap — CARTO `light_nolabels` base + `light_only_labels` on a
+    top pane so labels draw *above* the route (route weight already trimmed
+    to 3 in 003 as a stopgap).
+  - Marker declutter at the "all hours" zoom (weather cards overlap).
+  - Revisit whether a true dark map is wanted (003 uses one fixed light map
+    panel in both themes because near-black markers/controls blended on a
+    dark basemap).
+  - Owner hint: some of this may be assistable by the upload/add-route
+    script (e.g. route metadata), TBD when the feature is scoped.
 - Add the next real routes (the 300+200 brevet) via `tools/add_route.py` —
   first real-world test of the two-file promise (SC-003).
 - Delacau URL story: DONE (2026-07-17) — the old
