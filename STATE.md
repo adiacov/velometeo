@@ -25,13 +25,21 @@ to an ink/paper ladder (no hue, no gradients/blur/colored rings; shadows
 only at hero, sticky table header, map markers); the 8 weather emoji + theme
 toggle replaced by inline Lucide `currentColor` SVG (ISC) so icons always
 contrast; ok/warn re-encoded without color (warn inverted, ok hairline);
-grayscale/inverted OSM tiles with an ink route line; self-hosted OFL fonts
-(Literata headings, Inter body) in `assets/fonts/` (latin/latin-ext/cyrillic,
-zero third-party requests). Constitution VI's "study Delacau, don't redesign"
-is deliberately superseded on the visual layer only (owner-approved
-2026-07-17, recorded in the spec). Verified in both themes via headless-Chrome
-screenshots (index/event/map, RO + RU Cyrillic, OS-dark = explicit-dark
-parity, WCAG AA contrast). Next: owner review, then merge to `main`.
+self-hosted OFL fonts (Literata headings, Inter body) in `assets/fonts/`
+(latin/latin-ext/cyrillic, zero third-party requests). Constitution VI's
+"study Delacau, don't redesign" is deliberately superseded on the visual
+layer only (owner-approved 2026-07-17, recorded in the spec).
+
+Post-implementation owner feedback (2026-07-18) added three map follow-up
+commits on the same branch: (1) map basemap swapped from CSS-filtered OSM to
+CARTO Positron/Dark Matter (keyless minimal monochrome tiles, chosen by
+theme; a light `grayscale(1)` kills residual hue) — far more legible; (2) a
+cased route line (paper halo under ink line) + zoom-control contrast fix so
+buttons don't vanish on the dark map and attribution links aren't Leaflet
+blue; (3) `tools/add_route.py --simplify` (RDP) and Delacau GPX regenerated
+282→65 KB. Verified in both themes via headless-Chrome screenshots
+(index/event/map, RO + RU Cyrillic, OS-dark = explicit-dark parity, WCAG AA
+contrast). Next: owner review, then merge to `main`.
 
 Feature 002 (weather condition icons) is DONE and merged to `main`
 (fast-forward, 2026-07-17; full spec-kit cycle, all 9 tasks [X], 57 tests
@@ -53,10 +61,10 @@ labels in ro/en/ru.
   was removed.
 - Monochrome restyle (owner request 2026-07-17): DONE as feature 003 —
   implemented on `003-monochrome-restyle`, pending owner review + merge.
-- Remaining optional follow-up from `specs/001-velometeo-mvp/parity-check.md`:
-  GPX simplification option in `tools/add_route.py` (Pages serves .gpx
-  uncompressed, 288 KB for Delacau). The weather icon/label follow-up is
-  DONE (feature 002).
+- GPX simplification follow-up (`specs/001-velometeo-mvp/parity-check.md`):
+  DONE (2026-07-18) — `tools/add_route.py --simplify` (RDP) added; Delacau
+  GPX regenerated 282→65 KB. The weather icon/label follow-up is DONE
+  (feature 002).
 
 ## Blockers
 
