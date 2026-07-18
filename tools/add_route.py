@@ -53,6 +53,73 @@ def haversine_km(a, b):
     return 2 * 6371.0088 * math.asin(math.sqrt(h))
 
 
+def _equirect_xy(points, lat0_rad):
+    """Project (lat, lon) degrees to local metres (equirectangular, good
+    enough for point-to-segment distances over a single route)."""
+    r = 6371008.8
+    cos0 = math.cos(lat0_rad)
+    return [(r * math.radians(lon) * cos0, r * math.radians(lat)) for lat, lon in points]
+
+
+def _perp_dist(p, a, b):
+    (px, py), (ax, ay), (bx, by) = p, a, b
+    dx, dy = bx - ax, by - ay
+    if dx == 0 and dy == 0:
+        return math.hypot(px - ax, py - ay)
+    t = max(0.0, min(1.0, ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy)))
+    return math.hypot(px - (ax + t * dx), py - (ay + t * dy))
+
+
+def _rdp_mask(xy, epsilon):
+    """Iterative Ramer–Douglas–Peucker; returns a keep-mask over xy."""
+    n = len(xy)
+    if n < 3:
+        return [True] * n
+    keep = [False] * n
+    keep[0] = keep[-1] = True
+    stack = [(0, n - 1)]
+    while stack:
+        s, e = stack.pop()
+        a, b = xy[s], xy[e]
+        dmax, idx = 0.0, s
+        for i in range(s + 1, e):
+            d = _perp_dist(xy[i], a, b)
+            if d > dmax:
+                dmax, idx = d, i
+        if dmax > epsilon:
+            keep[idx] = True
+            stack.append((s, idx))
+            stack.append((idx, e))
+    return keep
+
+
+def simplify_gpx_file(src: Path, dst: Path, tolerance_m: float):
+    """Thin each <trkseg> with RDP at `tolerance_m` metres; waypoints and all
+    other structure are left untouched. Writes dst. Returns
+    (pts_before, pts_after, km_before, km_after)."""
+    ET.register_namespace("", GPX_NS.strip("{}"))
+    tree = ET.parse(src)
+    root = tree.getroot()
+    before = [(float(p.get("lat")), float(p.get("lon"))) for p in root.iter(f"{GPX_NS}trkpt")]
+    if len(before) < 2:
+        fail(f"{src} has no usable track to simplify")
+    km_before = sum(haversine_km(before[i - 1], before[i]) for i in range(1, len(before)))
+    lat0 = math.radians(sum(p[0] for p in before) / len(before))
+    after = []
+    for seg in root.iter(f"{GPX_NS}trkseg"):
+        trkpts = list(seg.findall(f"{GPX_NS}trkpt"))
+        pts = [(float(p.get("lat")), float(p.get("lon"))) for p in trkpts]
+        mask = _rdp_mask(_equirect_xy(pts, lat0), tolerance_m) if len(pts) >= 3 else [True] * len(pts)
+        for elem, keep, pt in zip(trkpts, mask, pts):
+            if keep:
+                after.append(pt)
+            else:
+                seg.remove(elem)
+    km_after = sum(haversine_km(after[i - 1], after[i]) for i in range(1, len(after)))
+    tree.write(dst, encoding="UTF-8", xml_declaration=True)
+    return len(before), len(after), km_before, km_after
+
+
 def measure_gpx(path: Path) -> float:
     """Parse and validate the GPX; return track length in km."""
     try:
@@ -117,6 +184,11 @@ def main() -> None:
     parser.add_argument("--mode", required=True, choices=["brevet", "pace"])
     parser.add_argument("--id", dest="event_id", help="URL slug (default: from name)")
     parser.add_argument("--timezone", help="IANA zone (default Europe/Chisinau, omitted if not set)")
+    parser.add_argument(
+        "--simplify", nargs="?", const=10.0, type=float, metavar="METERS",
+        help="thin the track with Ramer–Douglas–Peucker at the given tolerance "
+             "in metres (default 10) to shrink the served .gpx; waypoints kept",
+    )
     parser.add_argument("--force", action="store_true", help="overwrite an existing routes/<id>.gpx")
     parser.add_argument("--commit", action="store_true", help="git add + commit + push the two files")
     args = parser.parse_args()
@@ -159,7 +231,15 @@ def main() -> None:
     if args.timezone:
         entry["timezone"] = args.timezone
 
-    shutil.copyfile(args.gpx, target)
+    if args.simplify is not None:
+        nb, na, kb, ka = simplify_gpx_file(args.gpx, target, args.simplify)
+        pct = 100 * (1 - na / nb) if nb else 0
+        print(
+            f"simplified track: {nb} -> {na} points ({pct:.0f}% fewer), "
+            f"length {kb:.1f} -> {ka:.1f} km, tolerance {args.simplify:g} m"
+        )
+    else:
+        shutil.copyfile(args.gpx, target)
     manifest["events"].append(entry)
     manifest["events"].sort(key=lambda e: (e.get("date", ""), e.get("id", "")))
     write_manifest(manifest)
