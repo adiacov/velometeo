@@ -37,6 +37,14 @@ feedback loop.
 2. **Expected**: the map is the fixed light "printed map" panel, cleanly framed
    inside the dark page; no dark basemap. Light-theme map region looks identical.
 
+**Confirmed 2026-07-18 (post US1/US2)**: dark-theme headless screenshot shows the
+page frame dark but the map panel unchanged light — basemap, route, labels
+(US1), the marker subset (US2), checkpoints, and zoom control all identical to
+light theme. Code audit: every map overlay uses hardcoded `#fff`/`#111` literals
+(not theme `var(--…)`), and `map.js` uses fixed CARTO light tiles — so the map is
+theme-independent by construction. Decision holds: single fixed light map, no
+true-dark map.
+
 ## US4 — Checkpoint & control clarity
 
 1. At several zoom levels, screenshot checkpoint dots, the zoom control, and an
