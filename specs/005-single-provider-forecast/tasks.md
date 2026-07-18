@@ -57,10 +57,10 @@
 
 **Independent Test**: quickstart §4 — RO/EN/RU × upcoming/past = 6/6 correct provider + localized date + rationale.
 
-- [ ] T011 [P] [US3] Add `formatDate(isoDate, lang)` (Intl long date) to `assets/js/lib/format.js`; extend `tests/format.test.js` with RO/EN/RU cases.
-- [ ] T012 [P] [US3] Update dictionaries `assets/i18n/ro.json`, `assets/i18n/en.json`, `assets/i18n/ru.json`: add `status.upcoming` / `status.past` (contract: contracts/status-line.md, `{date}` placeholder, wording follows existing dictionary tone); delete `model.title`, `provenance.forecast`, `provenance.recorded`, `provenance.observed`; reword `notes.data` to the single ECMWF model.
-- [ ] T013 [US3] Render the status line in `assets/js/event-page.js`: `statusHtml` becomes provider (`MODEL.label`) + `formatDate(weather.target.targetDate, lang)` + `status.upcoming|status.past` by `target.kind`; waiting (`weather.waiting`) and failure (`weather.unavailable`) notes unchanged; delete the now-unused `provenanceOf` from `assets/js/lib/weather-api.js`.
-- [ ] T014 [US3] Verify per quickstart §4 (harness: 6/6 language×state matrix; grep site source + rendered DOM for observed/recorded remnants — SC-001) and `npm test` green. Commit the story.
+- [x] T011 [P] [US3] Add `formatDate(isoDate, lang)` (Intl long date) to `assets/js/lib/format.js`; extend `tests/format.test.js` with RO/EN/RU cases.
+- [x] T012 [P] [US3] Update dictionaries `assets/i18n/ro.json`, `assets/i18n/en.json`, `assets/i18n/ru.json`: add `status.upcoming` / `status.past` (contract: contracts/status-line.md, `{date}` placeholder, wording follows existing dictionary tone); delete `model.title`, `provenance.forecast`, `provenance.recorded`, `provenance.observed`; reword `notes.data` to the single ECMWF model.
+- [x] T013 [US3] Render the status line in `assets/js/event-page.js`: `statusHtml` becomes provider (`MODEL.label`) + `formatDate(weather.target.targetDate, lang)` + `status.upcoming|status.past` by `target.kind`; waiting (`weather.waiting`) and failure (`weather.unavailable`) notes unchanged; delete the now-unused `provenanceOf` from `assets/js/lib/weather-api.js`.
+- [x] T014 [US3] Verify per quickstart §4 (harness: 6/6 language×state matrix; grep site source + rendered DOM for observed/recorded remnants — SC-001) and `npm test` green. Commit the story.
 
 **Checkpoint**: full feature behavior delivered.
 

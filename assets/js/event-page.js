@@ -4,7 +4,7 @@
 // weather failure keeps the page structure (FR-017). Rendering is
 // repeatable: language switch re-renders (no refetch).
 import { loadEvent, loadWeather, enrichScenarios, EventDataError } from './event-data.js';
-import { MODEL, daysUntilForecast, provenanceOf, nowInTimeZone } from './lib/weather-api.js';
+import { MODEL, daysUntilForecast, nowInTimeZone } from './lib/weather-api.js';
 import {
   DASH,
   formatTemperature,
@@ -14,11 +14,12 @@ import {
   formatKm,
   formatHour,
   formatDuration,
+  formatDate,
   degreesToCardinal,
   windRelative,
 } from './lib/format.js';
 import { weatherCondition } from './lib/weather-icons.js';
-import { initI18n, t, onLangChange } from './i18n.js';
+import { initI18n, t, getLang, onLangChange } from './i18n.js';
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -154,8 +155,9 @@ async function main() {
       const days = Math.ceil(daysUntilForecast(data.eventTimes, nowInTimeZone(data.timezone), MODEL.horizonDays));
       return `<div class="note">${escapeHtml(t('weather.waiting', { days }))}</div>`;
     }
-    const provenance = provenanceOf(weather.state);
-    const pill = `<span class="pill"><b>${escapeHtml(t(`provenance.${provenance}`))}</b> · ${escapeHtml(MODEL.label)}</span>`;
+    const date = formatDate(weather.target.targetDate, getLang());
+    const rationale = t(`status.${weather.target.kind}`, { date });
+    const pill = `<span class="pill"><b>${escapeHtml(MODEL.label)}</b> · ${escapeHtml(rationale)}</span>`;
     return weather.fetchFailed ? `${pill}<div class="note">${escapeHtml(t('weather.unavailable'))}</div>` : pill;
   }
 

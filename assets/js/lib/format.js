@@ -55,3 +55,18 @@ export function formatDuration(hours) {
   const m = Math.round((hours - h) * 60);
   return m === 0 ? `${h} h` : `${h}:${String(m).padStart(2, '0')} h`;
 }
+
+const DATE_LOCALE = { ro: 'ro-RO', en: 'en-US', ru: 'ru-RU' };
+
+// Long localized date ("18 iulie 2026" / "July 18, 2026" / "18 июля 2026 г.")
+// for a "YYYY-MM-DD" string — the forecast target date in the status line.
+export function formatDate(isoDate, lang) {
+  const [y, m, d] = isoDate.split('-').map(Number);
+  const date = new Date(Date.UTC(y, m - 1, d));
+  return new Intl.DateTimeFormat(DATE_LOCALE[lang] || DATE_LOCALE.ro, {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(date);
+}

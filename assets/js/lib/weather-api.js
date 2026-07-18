@@ -134,10 +134,3 @@ export function weatherAt(location, isoHour) {
     windGusts: val('wind_gusts_10m'),
   };
 }
-
-// Page label provenance per state. Only 'forecast' remains reachable
-// (see selectEventState); kept as a function so callers don't special-case
-// 'waiting'. Superseded by the status line in US3 (T013).
-export function provenanceOf(state) {
-  return state === 'forecast' ? 'forecast' : null;
-}

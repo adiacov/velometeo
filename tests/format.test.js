@@ -10,6 +10,7 @@ import {
   windRelative,
   formatHour,
   formatDuration,
+  formatDate,
 } from '../assets/js/lib/format.js';
 
 test('every formatter renders null/undefined as the dash (FR-016)', () => {
@@ -54,4 +55,14 @@ test('hour label carries day context across midnight (FR-023)', () => {
 test('duration labels: whole and fractional hours', () => {
   assert.equal(formatDuration(8), '8 h');
   assert.equal(formatDuration(13.5), '13:30 h');
+});
+
+test('formatDate: long localized date per language, UTC-anchored (no off-by-one)', () => {
+  assert.equal(formatDate('2026-07-18', 'ro'), '18 iulie 2026');
+  assert.equal(formatDate('2026-07-18', 'en'), 'July 18, 2026');
+  assert.equal(formatDate('2026-07-18', 'ru'), '18 июля 2026 г.');
+});
+
+test('formatDate: unknown language falls back to Romanian', () => {
+  assert.equal(formatDate('2026-07-18', 'xx'), '18 iulie 2026');
 });

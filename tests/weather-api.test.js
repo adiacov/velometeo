@@ -8,7 +8,6 @@ import {
   buildWeatherUrl,
   normalizeLocations,
   weatherAt,
-  provenanceOf,
   nowInTimeZone,
   localIsoHour,
   HOURLY_FORECAST,
@@ -111,11 +110,6 @@ test('weatherAt: extracts one hour, preserves nulls (honest data)', () => {
   assert.equal(wp.windGusts, null);
   assert.equal(wp.precipitationProbability, 10);
   assert.equal(weatherAt(location, '2026-07-20T09:00'), null); // hour not in range
-});
-
-test('provenance: forecast is the only reachable label', () => {
-  assert.equal(provenanceOf('forecast'), 'forecast');
-  assert.equal(provenanceOf('waiting'), null);
 });
 
 test('single model: ECMWF, 15-day horizon (owner decision 2026-07-18)', () => {
