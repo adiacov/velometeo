@@ -41,7 +41,7 @@
   "weather.unavailable": "Datele meteo nu sunt disponibile momentan. Traseul si scenariile raman valabile — incearca mai tarziu.",
   "map.view": "Vezi pe harta",
   "notes.title": "Note tehnice",
-  "notes.data": "Datele meteo vin de la Open-Meteo (modelul ECMWF) si se incarca la fiecare deschidere a paginii. Valorile lipsa sunt afisate cu —, niciodata inventate.",
+  "notes.data": "Datele meteo vin de la Open-Meteo (modelul ECMWF) si se incarca la fiecare deschidere a paginii. Valorile lipsa sunt afisate cu —.",
   "notes.perPosition": "Vremea pentru fiecare ora este preluata pentru pozitia reala a ciclistului pe traseu in acel moment — pe un traseu lung, conditiile pot difera intre start, mijloc si finish.",
   "error.unknownEvent": "Evenimentul cerut nu exista. Vezi lista de pe pagina principala.",
   "error.badRoute": "Traseul acestui eveniment nu a putut fi citit.",

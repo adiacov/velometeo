@@ -41,7 +41,7 @@
   "weather.unavailable": "Weather data is temporarily unavailable. The route and scenarios are still shown — try again later.",
   "map.view": "View on map",
   "notes.title": "Technical notes",
-  "notes.data": "Weather data comes from Open-Meteo (ECMWF model) and loads fresh every time the page opens. Missing values are shown as —, never invented.",
+  "notes.data": "Weather data comes from Open-Meteo (ECMWF model) and loads fresh every time the page opens. Missing values are shown as —.",
   "notes.perPosition": "Each hour's weather is fetched for the rider's actual position along the route at that time — a long route can show different conditions at the start, middle, and finish.",
   "error.unknownEvent": "This event does not exist. See the list on the main page.",
   "error.badRoute": "The route for this event could not be read.",
