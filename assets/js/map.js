@@ -72,14 +72,24 @@ export function initMap(containerId, route, waypoints) {
   // Drop Leaflet's default prefix (it embeds a colored flag emoji) — keep the
   // page strictly monochrome (003).
   map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  // Minimal monochrome basemap (CARTO, keyless): Positron in light, Dark
+  // Matter in dark — purpose-built clean maps, so no CSS grayscale filter and
+  // far less clutter than filtered OSM. The map page has no theme toggle, so
+  // read the resolved theme once (same source of truth as theme.js).
+  const isDark = (localStorage.getItem('velometeo.theme')
+    || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) === 'dark';
+  L.tileLayer(`https://{s}.basemaps.cartocdn.com/${isDark ? 'dark_all' : 'light_all'}/{z}/{x}/{y}{r}.png`, {
+    maxZoom: 20,
+    subdomains: 'abcd',
+    detectRetina: true,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>',
   }).addTo(map);
 
-  // Colors are monochrome fallbacks; the actual per-theme ink/paper comes
-  // from CSS (.route-line / .route-checkpoint) so map.js stays theme-unaware.
-  const routeLine = L.polyline(route.points, { color: '#111', weight: 5, opacity: 0.9, className: 'route-line' }).addTo(map);
+  // A cased route line: a wide paper-colored halo (.route-casing) under the
+  // ink line (.route-line) so the route reads over any basemap. Colors are
+  // monochrome fallbacks; real per-theme ink/paper comes from CSS.
+  L.polyline(route.points, { color: '#fff', weight: 8, opacity: 1, className: 'route-casing' }).addTo(map);
+  const routeLine = L.polyline(route.points, { color: '#111', weight: 4, opacity: 1, className: 'route-line' }).addTo(map);
   const bounds = routeLine.getBounds();
   if (bounds.isValid()) map.fitBounds(bounds, { padding: [40, 40] });
 
