@@ -14,25 +14,18 @@ export function modelByKey(key) {
 }
 
 const FORECAST_BASE = 'https://api.open-meteo.com/v1/forecast';
-const ARCHIVE_BASE = 'https://archive-api.open-meteo.com/v1/archive';
 
-const HOURLY_COMMON = [
+export const HOURLY_FORECAST = [
   'temperature_2m',
   'apparent_temperature',
   'precipitation',
+  'precipitation_probability',
   'weather_code',
   'cloud_cover',
   'wind_speed_10m',
   'wind_direction_10m',
   'wind_gusts_10m',
 ];
-// precipitation_probability exists only in forecasts; archive rows show `—`.
-export const HOURLY_FORECAST = [...HOURLY_COMMON, 'precipitation_probability'];
-export const HOURLY_ARCHIVE = HOURLY_COMMON;
-
-// Archive reanalysis lags real time by 2–5 days; until day 7 after the event
-// the forecast endpoint still serves those recent past dates (FR-013).
-export const ARCHIVE_AFTER_DAYS = 7;
 
 const DAY_MS = 86400000;
 
@@ -76,47 +69,46 @@ const minutesOf = (hhmm) => {
   return h * 60 + m;
 };
 
-// Event temporal state (research D9). `event` and `now` are event-local:
-// event = { date, start, maxDurationHours }, now = { date, time } (as from
-// nowInTimeZone). horizonDays comes from the selected model.
-export function selectEventState(event, now, horizonDays) {
-  const startMs = utcDate(event.date) + minutesOf(event.start) * 60000;
-  const endMs = startMs + event.maxDurationHours * 3600000;
-  const nowMs = utcDate(now.date) + minutesOf(now.time) * 60000;
+// Forecast target date (research R2/R3): the event day if it hasn't started
+// yet, otherwise today — a past event shows today's forecast for riding the
+// route now, never a historical record.
+export function forecastTarget(event, now) {
+  const upcoming = utcDate(event.date) >= utcDate(now.date);
+  return { targetDate: upcoming ? event.date : now.date, kind: upcoming ? 'upcoming' : 'past' };
+}
 
-  if (nowMs <= endMs) {
-    const daysUntilStart = (utcDate(event.date) - utcDate(now.date)) / DAY_MS;
-    return daysUntilStart > horizonDays ? 'waiting' : 'forecast';
-  }
-  const daysSinceEnd = (nowMs - endMs) / DAY_MS;
-  return daysSinceEnd <= ARCHIVE_AFTER_DAYS ? 'recent-past' : 'archive';
+// Event temporal state: 'waiting' only when an upcoming event's day is
+// beyond the model horizon; everything else (including any past event,
+// whose target date is always today) is 'forecast'. `event` and `now` are
+// event-local: event = { date }, now = { date } (as from nowInTimeZone).
+export function selectEventState(event, now, horizonDays) {
+  const daysUntilStart = (utcDate(event.date) - utcDate(now.date)) / DAY_MS;
+  return daysUntilStart > horizonDays ? 'waiting' : 'forecast';
 }
 
 export function daysUntilForecast(event, now, horizonDays) {
   return Math.max(0, (utcDate(event.date) - utcDate(now.date)) / DAY_MS - horizonDays);
 }
 
-// One batched request per model: comma-separated coordinate lists for the
-// deduplicated sample positions, date range covering the longest scenario.
-// `state` must be 'forecast' | 'recent-past' | 'archive' (never 'waiting').
-export function buildWeatherUrl({ state, positions, event, modelKey, timezone }) {
+// One batched request: comma-separated coordinate lists for the
+// deduplicated sample positions, date range covering the longest scenario
+// anchored at the forecast target date (event day if upcoming, today if
+// past — see forecastTarget). `event` supplies start/maxDurationHours only.
+export function buildWeatherUrl({ positions, event, targetDate, modelKey, timezone }) {
   const model = modelByKey(modelKey);
-  const archive = state === 'archive';
-  const base = archive ? ARCHIVE_BASE : FORECAST_BASE;
-  const hourly = archive ? HOURLY_ARCHIVE : HOURLY_FORECAST;
-  const lastDay = addDays(event.date, Math.ceil((minutesOf(event.start) / 60 + event.maxDurationHours) / 24));
+  const lastDay = addDays(targetDate, Math.ceil((minutesOf(event.start) / 60 + event.maxDurationHours) / 24));
 
   const params = new URLSearchParams({
     latitude: positions.map((p) => p.lat.toFixed(4)).join(','),
     longitude: positions.map((p) => p.lon.toFixed(4)).join(','),
-    hourly: hourly.join(','),
-    start_date: event.date,
+    hourly: HOURLY_FORECAST.join(','),
+    start_date: targetDate,
     end_date: lastDay,
     timezone,
     wind_speed_unit: 'kmh',
+    models: model.apiModel,
   });
-  if (!archive) params.set('models', model.apiModel);
-  return `${base}?${params}`;
+  return `${FORECAST_BASE}?${params}`;
 }
 
 // Open-Meteo returns an object for one location, an array for several.
@@ -151,7 +143,9 @@ export function weatherAt(location, isoHour) {
   };
 }
 
-// Page label provenance per state (FR-013).
+// Page label provenance per state. Only 'forecast' remains reachable
+// (see selectEventState); kept as a function so callers don't special-case
+// 'waiting'. Superseded by the status line in US3 (T013).
 export function provenanceOf(state) {
-  return { forecast: 'forecast', 'recent-past': 'recorded', archive: 'observed' }[state] || null;
+  return state === 'forecast' ? 'forecast' : null;
 }

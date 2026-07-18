@@ -203,7 +203,7 @@ async function main() {
       });
     });
 
-    const enriched = enrichScenarios(data.scenarios, entry.date, weather.locations);
+    const enriched = enrichScenarios(data.scenarios, weather.target.targetDate, weather.locations);
 
     const container = $('[data-scenarios]');
     container.innerHTML = enriched

@@ -74,8 +74,8 @@ async function main() {
 
   renderControls();
 
-  const { locations } = await loadWeather(data, persistedModel().key);
-  rowsByKind = new Map(enrichScenarios(data.scenarios, data.entry.date, locations).map((s) => [s.kind, s]));
+  const { target, locations } = await loadWeather(data, persistedModel().key);
+  rowsByKind = new Map(enrichScenarios(data.scenarios, target.targetDate, locations).map((s) => [s.kind, s]));
   renderMarkers();
 }
 

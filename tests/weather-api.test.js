@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   MODELS,
   modelByKey,
+  forecastTarget,
   selectEventState,
   daysUntilForecast,
   buildWeatherUrl,
@@ -12,36 +13,42 @@ import {
   nowInTimeZone,
   localIsoHour,
   HOURLY_FORECAST,
-  HOURLY_ARCHIVE,
 } from '../assets/js/lib/weather-api.js';
 
 const event = { date: '2026-07-20', start: '06:00', maxDurationHours: 13.5 };
-const now = (date, time = '12:00') => ({ date, time });
+const now = (date) => ({ date });
+
+test('forecastTarget: upcoming event → event day', () => {
+  assert.deepEqual(forecastTarget(event, now('2026-07-16')), { targetDate: '2026-07-20', kind: 'upcoming' });
+});
+
+test('forecastTarget: event day itself → still upcoming, targets event day', () => {
+  assert.deepEqual(forecastTarget(event, now('2026-07-20')), { targetDate: '2026-07-20', kind: 'upcoming' });
+});
+
+test('forecastTarget: past event → today, never the original event day', () => {
+  assert.deepEqual(forecastTarget(event, now('2026-09-01')), { targetDate: '2026-09-01', kind: 'past' });
+  assert.deepEqual(forecastTarget(event, now('2026-07-21')), { targetDate: '2026-07-21', kind: 'past' });
+});
 
 test('state: event within horizon → forecast', () => {
   assert.equal(selectEventState(event, now('2026-07-16'), 15), 'forecast');
 });
 
-test('state: event day itself and mid-ride → forecast', () => {
-  assert.equal(selectEventState(event, now('2026-07-20', '10:00'), 15), 'forecast');
+test('state: event day itself → forecast', () => {
+  assert.equal(selectEventState(event, now('2026-07-20'), 15), 'forecast');
 });
 
 test('state: start beyond model horizon → waiting', () => {
   assert.equal(selectEventState(event, now('2026-07-01'), 15), 'waiting');
-  // Same date but ICON's shorter horizon (7) also waits.
+  // Same date but a shorter (e.g. 7-day) horizon also waits.
   assert.equal(selectEventState(event, now('2026-07-10'), 7), 'waiting');
   assert.equal(selectEventState(event, now('2026-07-10'), 15), 'forecast');
 });
 
-test('state: ended 2 days ago → recent-past; 8 days ago → archive', () => {
-  assert.equal(selectEventState(event, now('2026-07-22'), 15), 'recent-past');
-  assert.equal(selectEventState(event, now('2026-07-29'), 15), 'archive');
-});
-
-test('state: exactly 7 days after the end is still recent-past', () => {
-  // Event ends 2026-07-20 19:30; 7 days later, same time.
-  assert.equal(selectEventState(event, now('2026-07-27', '19:30'), 15), 'recent-past');
-  assert.equal(selectEventState(event, now('2026-07-27', '19:31'), 15), 'archive');
+test('state: any past event is always forecast, never waiting', () => {
+  assert.equal(selectEventState(event, now('2026-07-21'), 15), 'forecast');
+  assert.equal(selectEventState(event, now('2026-09-01'), 15), 'forecast');
 });
 
 test('daysUntilForecast counts down to the horizon', () => {
@@ -54,8 +61,8 @@ const positions = [
   { lat: 47.256613, lon: 28.802049 },
 ];
 
-test('forecast URL: batched coordinates, model id, forecast variable set', () => {
-  const url = new URL(buildWeatherUrl({ state: 'forecast', positions, event, modelKey: 'ecmwf', timezone: 'Europe/Chisinau' }));
+test('forecast URL: batched coordinates, model id, forecast variable set, anchored at target date', () => {
+  const url = new URL(buildWeatherUrl({ positions, event, targetDate: '2026-07-20', modelKey: 'ecmwf', timezone: 'Europe/Chisinau' }));
   assert.equal(url.host, 'api.open-meteo.com');
   assert.equal(url.searchParams.get('latitude'), '47.0493,47.2566');
   assert.equal(url.searchParams.get('longitude'), '28.8632,28.8020');
@@ -68,24 +75,15 @@ test('forecast URL: batched coordinates, model id, forecast variable set', () =>
   assert.equal(url.searchParams.get('end_date'), '2026-07-21');
 });
 
-test('archive URL: archive host, no models param, no precipitation_probability', () => {
-  const url = new URL(buildWeatherUrl({ state: 'archive', positions, event, modelKey: 'ecmwf', timezone: 'Europe/Chisinau' }));
-  assert.equal(url.host, 'archive-api.open-meteo.com');
-  assert.equal(url.searchParams.get('models'), null);
-  const hourly = url.searchParams.get('hourly');
-  assert.equal(hourly, HOURLY_ARCHIVE.join(','));
-  assert.ok(!hourly.includes('precipitation_probability'));
+test('past event: fetch window anchored at today, not the original event date', () => {
+  const url = new URL(buildWeatherUrl({ positions, event, targetDate: '2026-09-01', modelKey: 'ecmwf', timezone: 'Europe/Chisinau' }));
+  assert.equal(url.searchParams.get('start_date'), '2026-09-01');
+  assert.equal(url.searchParams.get('end_date'), '2026-09-02');
 });
 
-test('recent-past uses the forecast endpoint with explicit past dates', () => {
-  const url = new URL(buildWeatherUrl({ state: 'recent-past', positions, event, modelKey: 'icon', timezone: 'Europe/Chisinau' }));
-  assert.equal(url.host, 'api.open-meteo.com');
-  assert.equal(url.searchParams.get('models'), 'icon_seamless');
-});
-
-test('multi-day event extends end_date past midnight', () => {
+test('multi-day event extends end_date past midnight, anchored at target date', () => {
   const long = { date: '2026-07-20', start: '20:00', maxDurationHours: 20 };
-  const url = new URL(buildWeatherUrl({ state: 'forecast', positions, event: long, modelKey: 'ecmwf', timezone: 'Europe/Chisinau' }));
+  const url = new URL(buildWeatherUrl({ positions, event: long, targetDate: '2026-07-20', modelKey: 'ecmwf', timezone: 'Europe/Chisinau' }));
   assert.equal(url.searchParams.get('end_date'), '2026-07-22'); // ends 16:00 two days on
 });
 
@@ -104,22 +102,20 @@ test('weatherAt: extracts one hour, preserves nulls (honest data)', () => {
       wind_direction_10m: [180, 190],
       apparent_temperature: [13.0, 14.0],
       precipitation: [0, 0.3],
+      precipitation_probability: [10, 20],
       weather_code: [3, 61],
       cloud_cover: [80, 100],
-      // precipitation_probability entirely absent (archive case)
     },
   };
   const wp = weatherAt(location, '2026-07-20T06:00');
   assert.equal(wp.temperature, 14.2);
   assert.equal(wp.windGusts, null);
-  assert.equal(wp.precipitationProbability, null);
+  assert.equal(wp.precipitationProbability, 10);
   assert.equal(weatherAt(location, '2026-07-20T09:00'), null); // hour not in range
 });
 
-test('provenance labels map from state (FR-013)', () => {
+test('provenance: forecast is the only reachable label', () => {
   assert.equal(provenanceOf('forecast'), 'forecast');
-  assert.equal(provenanceOf('recent-past'), 'recorded');
-  assert.equal(provenanceOf('archive'), 'observed');
   assert.equal(provenanceOf('waiting'), null);
 });
 

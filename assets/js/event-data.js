@@ -5,6 +5,7 @@ import { brevetScenarios, paceScenarios, classifyBrevet, scenarioHours } from '.
 import {
   modelByKey,
   selectEventState,
+  forecastTarget,
   buildWeatherUrl,
   normalizeLocations,
   weatherAt,
@@ -93,32 +94,36 @@ export function persistedModel() {
 }
 
 // Fetch weather for one model. Never throws: waiting yields no locations,
-// failure sets fetchFailed (FR-017 — the page still renders).
+// failure sets fetchFailed (FR-017 — the page still renders). `target` is
+// the forecast target date/kind (event day if upcoming, today if past).
 export async function loadWeather({ eventTimes, positions, timezone }, modelKey) {
   const model = modelByKey(modelKey);
   const now = nowInTimeZone(timezone);
   const state = selectEventState(eventTimes, now, model.horizonDays);
+  const target = forecastTarget(eventTimes, now);
   if (state === 'waiting') {
-    return { model, now, state, locations: null, fetchFailed: false };
+    return { model, now, state, target, locations: null, fetchFailed: false };
   }
   try {
-    const res = await fetch(buildWeatherUrl({ state, positions, event: eventTimes, modelKey: model.key, timezone }));
+    const url = buildWeatherUrl({ positions, event: eventTimes, targetDate: target.targetDate, modelKey: model.key, timezone });
+    const res = await fetch(url);
     if (!res.ok) throw new Error(String(res.status));
-    return { model, now, state, locations: normalizeLocations(await res.json()), fetchFailed: false };
+    return { model, now, state, target, locations: normalizeLocations(await res.json()), fetchFailed: false };
   } catch (err) {
     console.warn('velometeo: weather fetch failed', err);
-    return { model, now, state, locations: null, fetchFailed: true };
+    return { model, now, state, target, locations: null, fetchFailed: true };
   }
 }
 
 // Scenario rows ready for rendering: time label + weather (null-safe).
-export function enrichScenarios(scenarios, eventDate, locations) {
+// `targetDate` anchors hour lookups (event day if upcoming, today if past).
+export function enrichScenarios(scenarios, targetDate, locations) {
   return scenarios.map((s) => ({
     ...s,
     rows: s.hours.map((h) => ({
       ...h,
       timeLabel: formatHour(h.clockTime, h.dayOffset),
-      weather: locations ? weatherAt(locations[h.positionIndex], localIsoHour(eventDate, h)) : null,
+      weather: locations ? weatherAt(locations[h.positionIndex], localIsoHour(targetDate, h)) : null,
     })),
   }));
 }
