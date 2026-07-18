@@ -28,7 +28,7 @@
   "wind.tail": "din spate",
   "wind.cross": "lateral",
   "status.upcoming": "Prognoza pentru {date} — ziua evenimentului. Foloseste-o ca sa te pregatesti pentru cursa.",
-  "status.past": "Evenimentul a trecut. Prognoza este pentru {date} (astazi) — ca sa poti parcurge traseul acum.",
+  "status.past": "Evenimentul a trecut. Prognoza este pentru {date} (astazi).",
   "weather.clear": "Senin",
   "weather.partlyCloudy": "Partial noros",
   "weather.overcast": "Innorat",

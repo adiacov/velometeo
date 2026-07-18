@@ -28,7 +28,7 @@
   "wind.tail": "tailwind",
   "wind.cross": "crosswind",
   "status.upcoming": "Forecast for {date} — the event day. Use it to prepare for the ride.",
-  "status.past": "The event has passed. Showing the forecast for {date} (today) — for riding the route now.",
+  "status.past": "The event has passed. Showing the forecast for {date} (today).",
   "weather.clear": "Clear",
   "weather.partlyCloudy": "Partly cloudy",
   "weather.overcast": "Overcast",
