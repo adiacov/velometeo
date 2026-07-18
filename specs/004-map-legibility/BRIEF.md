@@ -54,10 +54,46 @@ to read. It is a pure map feature; nothing on the index/event pages changes.
 - **US4 — Checkpoint & control clarity (P3).** Checkpoint dots, zoom controls,
   and popups read cleanly at all zoom levels and stay on-brand (monochrome).
 
+- **US5 — Auto-simplify GPX at pipeline time (P2, ops/tooling).** A GPX
+  committed to `routes/` must be simplified automatically — the curator drops
+  the two files and pushes; they should **never** run a simplification step by
+  hand. A push/dispatch-triggered GitHub Action simplifies any unprocessed
+  `routes/*.gpx` (reusing the RDP logic already in `tools/add_route.py`) and
+  commits the smaller file back. Delacau went 282→65 KB (~4.3×) this way in
+  003; unprocessed uploads should get the same automatically.
+
+  **Idempotency / "which is processed" — recommended design:** reuse the
+  self-contained `vm:simplified` marker that `simplify_gpx_file()` already
+  stamps onto `<gpx>` (namespace `https://adiacov.github.io/velometeo/ns`).
+  The Action simplifies exactly the files that lack the marker → no separate
+  state to maintain, and it travels with the file. The owner suggested
+  tracking state in `routes/index.json` instead (a flag or source checksum);
+  that is the documented **alternative** — a per-route `gpxChecksum` in
+  index.json survives someone stripping the marker and lets the Action detect
+  a *changed* source, at the cost of extra bookkeeping that can drift from the
+  files. The spec should pick one (recommendation: the in-file marker;
+  add an index.json checksum only if marker-stripping is a real worry).
+
+  **Guardrails (constitution VII):** the Action MUST be triggered by
+  `push`/`pull_request`/`workflow_dispatch` on `routes/**` — NEVER a
+  `schedule:` cron (barred as load-bearing). It needs write access to commit
+  the simplified file back (bot commit via `GITHUB_TOKEN`), and must not loop
+  (skip its own commits / only act on marker-less files). This *strengthens*
+  the two-file promise (constitution III): the curator still adds just GPX +
+  index.json entry; efficiency is handled for them.
+
+  *Note:* this is an ops/pipeline story, not visual map polish — the spec may
+  reasonably split it into its own small feature. Captured here per owner
+  request (2026-07-18).
+
 ## Owner decisions (locked 2026-07-18)
 
 - Dark map: **keep the single light panel** in both themes. No true-dark map.
 - Marker declutter: **fewer markers at wide zoom**, more as you zoom in.
+- GPX efficiency: **simplification must run automatically in the pipeline**
+  (owner will not run it manually); track processed state via the in-file
+  `vm:simplified` marker (recommended) or an `index.json` checksum
+  (alternative). Push-triggered Action, not a scheduled cron.
 - Process: create this brief now; next agent runs the whole Spec Kit flow.
 
 ## Out of scope
@@ -66,7 +102,8 @@ to read. It is a pure map feature; nothing on the index/event pages changes.
   II & the product's no-tracking rule).
 - Changing weather-marker *content* (time/temp/icon/arrow) or the shared
   weather-code → icon mapping (feature 002 contract).
-- Any non-map page (index, event) and the add-route tooling.
+- Any non-map page (index, event). (The add-route tooling / pipeline IS in
+  scope for US5 only — GPX auto-simplification; no other tooling changes.)
 - New external tile/data origins beyond the existing CARTO + OSM + Open-Meteo.
 
 ## Constraints carried over
