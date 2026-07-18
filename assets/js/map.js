@@ -86,8 +86,8 @@ export function initMap(containerId, route, waypoints) {
   // A cased route line: a wide paper-colored halo (.route-casing) under the
   // ink line (.route-line) so the route reads over any basemap. Colors are
   // monochrome fallbacks; real per-theme ink/paper comes from CSS.
-  L.polyline(route.points, { color: '#fff', weight: 8, opacity: 1, className: 'route-casing' }).addTo(map);
-  const routeLine = L.polyline(route.points, { color: '#111', weight: 4, opacity: 1, className: 'route-line' }).addTo(map);
+  L.polyline(route.points, { color: '#fff', weight: 6, opacity: 1, className: 'route-casing' }).addTo(map);
+  const routeLine = L.polyline(route.points, { color: '#111', weight: 3, opacity: 1, className: 'route-line' }).addTo(map);
   const bounds = routeLine.getBounds();
   if (bounds.isValid()) map.fitBounds(bounds, { padding: [40, 40] });
 
