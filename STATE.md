@@ -16,10 +16,10 @@ cache revalidation).
 
 ## Active work
 
-Feature 003 (monochrome e-reader restyle) is **implemented on branch
-`003-monochrome-restyle`, awaiting owner review + merge**. Full spec-kit
-cycle; all 12 tasks done, phase-gated with a commit per phase; 61 unit
-tests green (added `tests/monochrome.test.js` guarding the invariant). The
+Feature 003 (monochrome e-reader restyle) is **DONE and merged to `main`
+(fast-forward, 2026-07-18); deploying via Pages**. Full spec-kit cycle; all
+12 tasks done, phase-gated with a commit per phase; 61 unit tests green
+(added `tests/monochrome.test.js` guarding the invariant). The
 whole site is strictly black-and-white in both themes: CSS tokens retargeted
 to an ink/paper ladder (no hue, no gradients/blur/colored rings; shadows
 only at hero, sticky table header, map markers); the 8 weather emoji + theme
@@ -43,7 +43,7 @@ page theme (always legible); (3) GPX simplification is now automatic in
 already-processed file is copied unchanged, never re-simplified. Delacau GPX
 282→65 KB. Verified in both themes via headless-Chrome screenshots
 (index/event/map, RO + RU Cyrillic, OS-dark = explicit-dark parity, WCAG AA
-contrast). Next: owner review, then merge to `main`.
+contrast). Live after the Pages deploy.
 
 Feature 002 (weather condition icons) is DONE and merged to `main`
 (fast-forward, 2026-07-17; full spec-kit cycle, all 9 tasks [X], 57 tests
