@@ -37,11 +37,7 @@ deployed and verified on the live site). What it changed:
 - Future improvement (owner, not yet scoped): make `tools/add_route.py`
   interactive — prompt for any missing argument (numbered choices /
   optional readline autocomplete) alongside the current flag-based path;
-  must stay stdlib-only and non-TTY-safe. Revisit after seeing the tools
-  in use post-004.
-- Contribution path for others: explored and **dropped** (owner call,
-  2026-07-18) — all variants were too complex or too compromised. Forking
-  remains the only contribution path. Do not re-propose.
+  must stay stdlib-only and non-TTY-safe.
 
 ## Blockers
 
