@@ -7,6 +7,14 @@
       "date": "2026-05-31",
       "start": "06:00",
       "mode": "brevet"
+    },
+    {
+      "id": "orhei-200-brm",
+      "name": "Orhei 200 BRM",
+      "gpx": "routes/orhei-200-brm.gpx",
+      "date": "2026-09-12",
+      "start": "06:00",
+      "mode": "brevet"
     }
   ]
 }

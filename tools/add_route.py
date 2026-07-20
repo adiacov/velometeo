@@ -161,6 +161,10 @@ def measure_gpx(path: Path) -> float:
         fail(f"{path} has no usable track (need at least 2 track points)")
     return sum(haversine_km(points[i - 1], points[i]) for i in range(1, len(points)))
 
+def extract_file_name(path: Path) -> str:
+    """Extracts file name; return file name including extension."""
+    return path.name
+
 
 def check_brevet_distance(length_km: float) -> None:
     nearest = min(STANDARD_DISTANCES, key=lambda d: abs(length_km - d))
@@ -232,6 +236,7 @@ def main() -> None:
 
     if not args.gpx.is_file():
         fail(f"{args.gpx} does not exist")
+    file_name = extract_file_name(args.gpx)
     length_km = measure_gpx(args.gpx)
     if args.mode == "brevet":
         check_brevet_distance(length_km)
@@ -242,14 +247,14 @@ def main() -> None:
     if any(e.get("id") == event_id for e in manifest["events"]):
         fail(f"id {event_id!r} already exists in {MANIFEST}")
 
-    target = REPO_ROOT / "routes" / f"{event_id}.gpx"
+    target = REPO_ROOT / "routes" / f"{file_name}"
     if target.exists() and not args.force:
         fail(f"{target} already exists (use --force to overwrite)")
 
     entry = {
         "id": event_id,
         "name": args.name,
-        "gpx": f"routes/{event_id}.gpx",
+        "gpx": f"routes/{file_name}",
         "date": args.date,
         "start": args.start,
         "mode": args.mode,
@@ -273,7 +278,7 @@ def main() -> None:
     manifest["events"].append(entry)
     manifest["events"].sort(key=lambda e: (e.get("date", ""), e.get("id", "")))
     write_manifest(manifest)
-    print(f"added: routes/{event_id}.gpx + entry in routes/index.json")
+    print(f"added: routes/{file_name} + entry in routes/index.json")
 
     if args.commit:
         rel_gpx = target.relative_to(REPO_ROOT)
