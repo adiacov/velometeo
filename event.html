@@ -9,6 +9,18 @@
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
+
+<div id="loading-overlay">
+  <dotlottie-player
+    id="loading-animation"
+    src="assets/animations/loading.lottie"
+    background="transparent"
+    speed="1"
+    loop
+    autoplay>
+  </dotlottie-player>
+</div>
+
 <div class="page">
   <header class="hero">
     <div class="topbar">
@@ -56,6 +68,7 @@
 
 </div>
 <script src="assets/js/theme.js" defer></script>
+<script type="module" src="assets/js/vendor/dotlottie-player/dotlottie-player.mjs"></script>
 <script type="module" src="assets/js/event-page.js"></script>
 </body>
 </html>

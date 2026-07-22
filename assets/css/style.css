@@ -1342,3 +1342,29 @@ td:first-child {
 .compact-map-header {
    grid-template-columns: repeat(3, minmax(0, 1fr))
 }
+
+/* velometeo: page loading animation */
+#loading-overlay {
+   position: fixed;
+   inset: 0;
+
+   display: flex;
+   justify-content: center;
+   align-items: center;
+
+   background: var(--bg);
+
+   z-index: 99999;
+
+   transition: opacity .35s ease;
+}
+
+#loading-overlay.hidden {
+   opacity: 0;
+   pointer-events: none;
+}
+
+#loading-animation {
+   width: 220px;
+   height: 220px;
+}

@@ -112,6 +112,7 @@ async function main() {
     fatalErrorKey = key;
     $('[data-event-status]').innerHTML = `<div class="note">${escapeHtml(t(key))}</div>`;
     $('[data-scenarios]').innerHTML = '';
+    document.getElementById('loading-overlay')?.classList.add('hidden');
   };
   onLangChange(() => {
     if (fatalErrorKey) showError(fatalErrorKey);
@@ -201,10 +202,13 @@ async function main() {
 
   weather = await loadWeather(data);
   renderAll();
+
+  document.getElementById('loading-overlay')?.classList.add('hidden');
 }
 
 main().catch((err) => {
   console.error('velometeo: unexpected failure', err);
   const el = document.querySelector('[data-event-status]');
   if (el) el.innerHTML = '<div class="note">…</div>';
+  document.getElementById('loading-overlay')?.classList.add('hidden');
 });
